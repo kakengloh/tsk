@@ -33,6 +33,9 @@ func Init(tr *repository.TaskRepository) {
 
 	rmCmd := NewRmCmd(tr)
 	rootCmd.AddCommand(rmCmd)
+
+	boardCmd := NewBoardCmd(tr)
+	rootCmd.AddCommand(boardCmd)
 }
 
 func Execute() {
