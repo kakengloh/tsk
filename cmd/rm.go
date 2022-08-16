@@ -25,7 +25,7 @@ func NewRmCmd(tr *repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("failed to delete task: %w", err)
 			}
 
-			fmt.Printf("Task [%d] has been deleted\n", id)
+			fmt.Printf("Task \"%d\" has been deleted\n", id)
 
 			return nil
 		},

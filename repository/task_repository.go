@@ -70,8 +70,8 @@ func (tr *TaskRepository) CreateTask(name string, priority entity.TaskPriority, 
 	return t, nil
 }
 
-func (tr *TaskRepository) ListTasks() ([]entity.Task, error) {
-	tasks := []entity.Task{}
+func (tr *TaskRepository) ListTasks() (entity.TaskList, error) {
+	tasks := entity.TaskList{}
 
 	err := tr.DB.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))
@@ -93,8 +93,8 @@ func (tr *TaskRepository) ListTasks() ([]entity.Task, error) {
 	return tasks, err
 }
 
-func (tr *TaskRepository) SearchTasks(q string) ([]entity.Task, error) {
-	tasks := []entity.Task{}
+func (tr *TaskRepository) SearchTasks(q string) (entity.TaskList, error) {
+	tasks := entity.TaskList{}
 
 	err := tr.DB.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))

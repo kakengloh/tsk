@@ -33,9 +33,6 @@ func Init(tr *repository.TaskRepository) {
 
 	rmCmd := NewRmCmd(tr)
 	rootCmd.AddCommand(rmCmd)
-
-	// Root command is an alias of `ls`
-	rootCmd.RunE = lsCmd.RunE
 }
 
 func Execute() {

@@ -66,3 +66,29 @@ type TaskComment struct {
 	ID   string
 	Text string
 }
+
+type TaskList []Task
+
+func (tl TaskList) FilterByStatus(status TaskStatus) []Task {
+	tasks := []Task{}
+
+	for _, t := range tl {
+		if t.Status == status {
+			tasks = append(tasks, t)
+		}
+	}
+
+	return tasks
+}
+
+func (tl TaskList) FilterByPriority(priority TaskPriority) []Task {
+	tasks := []Task{}
+
+	for _, t := range tl {
+		if t.Priority == priority {
+			tasks = append(tasks, t)
+		}
+	}
+
+	return tasks
+}

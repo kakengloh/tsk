@@ -68,9 +68,9 @@ func NewSetCmd(tr *repository.TaskRepository) *cobra.Command {
 		},
 	}
 
-	setCmd.PersistentFlags().StringP("name", "n", "", "Name")
-	setCmd.PersistentFlags().StringP("priority", "p", "", "Priority")
-	setCmd.PersistentFlags().StringP("status", "s", "", "Status")
+	setCmd.PersistentFlags().StringP("name", "n", "", "Set name")
+	setCmd.PersistentFlags().StringP("priority", "p", "", "Set priority")
+	setCmd.PersistentFlags().StringP("status", "s", "", "Set status")
 
 	return setCmd
 }
