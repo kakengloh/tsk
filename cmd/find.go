@@ -8,15 +8,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewLsCmd(tr *repository.TaskRepository) *cobra.Command {
+func NewFindCmd(tr *repository.TaskRepository) *cobra.Command {
 	return &cobra.Command{
-		Use:   "ls",
-		Short: "List tasks",
+		Use:   "find",
+		Short: "Find tasks with keyword",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			tasks, err := tr.ListTasks()
+			q := args[0]
+
+			tasks, err := tr.SearchTasks(q)
 
 			if len(tasks) == 0 {
-				fmt.Println("You don't have any task yet, use the `tsk mk` command to make your first task!")
+				fmt.Printf("No tasks found with keyword \"%s\"\n", q)
 				return nil
 			}
 

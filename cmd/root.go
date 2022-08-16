@@ -22,6 +22,9 @@ func Init(tr *repository.TaskRepository) {
 	lsCmd := NewLsCmd(tr)
 	rootCmd.AddCommand(lsCmd)
 
+	findCmd := NewFindCmd(tr)
+	rootCmd.AddCommand(findCmd)
+
 	mkCmd := NewMkCmd(tr)
 	rootCmd.AddCommand(mkCmd)
 

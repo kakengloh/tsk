@@ -3,6 +3,7 @@ package repository
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/kakengloh/tsk/entity"
@@ -83,6 +84,32 @@ func (tr *TaskRepository) ListTasks() ([]entity.Task, error) {
 			}
 
 			tasks = append(tasks, t)
+			return nil
+		})
+
+		return err
+	})
+
+	return tasks, err
+}
+
+func (tr *TaskRepository) SearchTasks(q string) ([]entity.Task, error) {
+	tasks := []entity.Task{}
+
+	err := tr.DB.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("Task"))
+		err := b.ForEach(func(k, v []byte) error {
+			var t entity.Task
+
+			err := json.Unmarshal(v, &t)
+			if err != nil {
+				return err
+			}
+
+			if strings.Contains(strings.ToLower(t.Name), strings.ToLower(q)) {
+				tasks = append(tasks, t)
+			}
+
 			return nil
 		})
 
