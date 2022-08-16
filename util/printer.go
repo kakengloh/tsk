@@ -108,12 +108,20 @@ func PrintTaskBoard(todo, doing, done entity.TaskList) {
 
 		if len(todo) > i {
 			row = append(row, todo[i].Name)
+		} else {
+			row = append(row, "")
 		}
+
 		if len(doing) > i {
 			row = append(row, doing[i].Name)
+		} else {
+			row = append(row, "")
 		}
+
 		if len(done) > i {
 			row = append(row, done[i].Name)
+		} else {
+			row = append(row, "")
 		}
 
 		table.Append(row)
