@@ -25,8 +25,8 @@ func Init(tr *repository.TaskRepository) {
 	mkCmd := NewMkCmd(tr)
 	rootCmd.AddCommand(mkCmd)
 
-	edCmd := NewEdCmd(tr)
-	rootCmd.AddCommand(edCmd)
+	setCmd := NewSetCmd(tr)
+	rootCmd.AddCommand(setCmd)
 
 	rmCmd := NewRmCmd(tr)
 	rootCmd.AddCommand(rmCmd)

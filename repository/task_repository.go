@@ -108,6 +108,42 @@ func (tr *TaskRepository) GetTaskByID(id int) (entity.Task, error) {
 	return t, err
 }
 
+func (tr *TaskRepository) UpdateTask(id int, name string, priority entity.TaskPriority, status entity.TaskStatus) (entity.Task, error) {
+	var t entity.Task
+
+	err := tr.DB.Update(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("Task"))
+
+		v := b.Get(util.Itob(id))
+		if v == nil {
+			return fmt.Errorf("task not found")
+		}
+
+		err := json.Unmarshal(v, &t)
+		if err != nil {
+			return err
+		}
+
+		if name != "" {
+			t.Name = name
+		}
+
+		t.Priority = priority
+		t.Status = status
+
+		buf, err := json.Marshal(t)
+		if err != nil {
+			return err
+		}
+
+		err = b.Put(util.Itob(id), buf)
+
+		return err
+	})
+
+	return t, err
+}
+
 func (tr *TaskRepository) DeleteTask(id int) error {
 	err := tr.DB.Update(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))
