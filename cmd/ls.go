@@ -20,18 +20,23 @@ func NewLsCmd(tr *repository.TaskRepository) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			tasks, err := tr.ListTasks()
 
+			if len(tasks) == 0 {
+				fmt.Println("You don't have any task yet, use the `tsk mk` command to make your first task!")
+				return nil
+			}
+
 			if err != nil {
 				return fmt.Errorf("failed to list tasks: %w", err)
 			}
 
 			table := tablewriter.NewWriter(os.Stdout)
-			table.SetHeader([]string{"", "ID", "Name", "Status", "Created"})
+			table.SetHeader([]string{"ID", "Name", "Status", "Priority", "Created"})
 
-			for i, t := range tasks {
-				index := strconv.Itoa(i + 1)
+			for _, t := range tasks {
 				status := cases.Title(language.English, cases.Compact).String(t.Status.String())
+				priority := cases.Title(language.English, cases.Compact).String(t.Priority.String())
 				since := time.Since(t.CreatedAt).Round(time.Second).String() + " ago"
-				table.Append([]string{index, t.ID, t.Name, status, since})
+				table.Append([]string{strconv.Itoa(t.ID), t.Name, status, priority, since})
 			}
 
 			table.Render()

@@ -5,7 +5,7 @@ import (
 )
 
 type Task struct {
-	ID        string
+	ID        int
 	Name      string
 	Priority  TaskPriority
 	Status    TaskStatus

@@ -6,16 +6,17 @@ import (
 	"time"
 
 	"github.com/kakengloh/tsk/entity"
+	"github.com/kakengloh/tsk/util"
 	"github.com/teris-io/shortid"
-	bolt "go.etcd.io/bbolt"
+	"go.etcd.io/bbolt"
 )
 
 type TaskRepository struct {
-	DB *bolt.DB
+	DB *bbolt.DB
 }
 
-func NewTaskRepository(db *bolt.DB) (*TaskRepository, error) {
-	err := db.Update(func(tx *bolt.Tx) error {
+func NewTaskRepository(db *bbolt.DB) (*TaskRepository, error) {
+	err := db.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("Task"))
 		return err
 	})
@@ -24,9 +25,8 @@ func NewTaskRepository(db *bolt.DB) (*TaskRepository, error) {
 }
 
 func (tr *TaskRepository) CreateTask(name string, priority entity.TaskPriority, status entity.TaskStatus, comment string) (entity.Task, error) {
-	id, _ := shortid.Generate()
-
 	comments := []entity.TaskComment{}
+
 	if comment != "" {
 		cid, _ := shortid.Generate()
 		comments = append(comments, entity.TaskComment{
@@ -35,25 +35,29 @@ func (tr *TaskRepository) CreateTask(name string, priority entity.TaskPriority, 
 		})
 	}
 
-	t := entity.Task{
-		ID:        id,
-		Name:      name,
-		Priority:  priority,
-		Status:    status,
-		Comments:  comments,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
+	var t entity.Task
 
-	err := tr.DB.Update(func(tx *bolt.Tx) error {
+	err := tr.DB.Update(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))
+
+		id, _ := b.NextSequence()
+
+		t = entity.Task{
+			ID:        int(id),
+			Name:      name,
+			Priority:  priority,
+			Status:    status,
+			Comments:  comments,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
 
 		buf, err := json.Marshal(t)
 		if err != nil {
 			return err
 		}
 
-		b.Put([]byte(id), buf)
+		b.Put(util.Itob(t.ID), buf)
 
 		return nil
 	})
@@ -68,33 +72,32 @@ func (tr *TaskRepository) CreateTask(name string, priority entity.TaskPriority, 
 func (tr *TaskRepository) ListTasks() ([]entity.Task, error) {
 	tasks := []entity.Task{}
 
-	err := tr.DB.View(func(tx *bolt.Tx) error {
+	err := tr.DB.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))
-		c := b.Cursor()
-
-		for k, v := c.First(); k != nil; k, v = c.Next() {
+		err := b.ForEach(func(k, v []byte) error {
 			var t entity.Task
 
 			err := json.Unmarshal(v, &t)
 			if err != nil {
-				continue
+				return err
 			}
 
 			tasks = append(tasks, t)
-		}
+			return nil
+		})
 
-		return nil
+		return err
 	})
 
 	return tasks, err
 }
 
-func (tr *TaskRepository) GetTaskByID(id string) (entity.Task, error) {
+func (tr *TaskRepository) GetTaskByID(id int) (entity.Task, error) {
 	var t entity.Task
 
-	err := tr.DB.View(func(tx *bolt.Tx) error {
+	err := tr.DB.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))
-		v := b.Get([]byte(id))
+		v := b.Get(util.Itob(id))
 		if v == nil {
 			return fmt.Errorf("task not found")
 		}
@@ -105,10 +108,10 @@ func (tr *TaskRepository) GetTaskByID(id string) (entity.Task, error) {
 	return t, err
 }
 
-func (tr *TaskRepository) DeleteTask(id string) error {
-	err := tr.DB.Update(func(tx *bolt.Tx) error {
+func (tr *TaskRepository) DeleteTask(id int) error {
+	err := tr.DB.Update(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))
-		return b.Delete([]byte(id))
+		return b.Delete(util.Itob(id))
 	})
 	return err
 }
