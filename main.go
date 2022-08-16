@@ -2,19 +2,18 @@ package main
 
 import (
 	"log"
-	"time"
 
 	"github.com/kakengloh/tsk/cmd"
+	"github.com/kakengloh/tsk/driver"
 	"github.com/kakengloh/tsk/repository"
-	bolt "go.etcd.io/bbolt"
 )
 
 func main() {
-	db, err := bolt.Open("bolt.db", 0666, &bolt.Options{Timeout: time.Second})
+	db, err := driver.NewBolt("bolt.db")
 	if err != nil {
-		log.Fatalf("failed to connect to Bolt DB: %s", err)
+		log.Fatalf("failed to connect to BoltDB: %s", err)
 	}
-	defer db.Close()
+	defer driver.CloseBolt()
 
 	tr, err := repository.NewTaskRepository(db)
 	if err != nil {
