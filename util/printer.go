@@ -1,8 +1,10 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -14,9 +16,11 @@ import (
 
 func PrintTasks(tasks []entity.Task) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Name", "Status", "Priority", "Created"})
+	table.SetRowLine(true)
+	table.SetHeader([]string{"ID", "Name", "Status", "Priority", "Created", "Comments"})
 
 	for _, t := range tasks {
+		// Status formatting
 		status := cases.Title(language.English, cases.Compact).String(t.Status.String())
 		switch t.Status {
 		case entity.TaskStatusDoing:
@@ -25,6 +29,7 @@ func PrintTasks(tasks []entity.Task) {
 			status = color.GreenString(status)
 		}
 
+		// Priority formatting
 		priority := cases.Title(language.English, cases.Compact).String(t.Priority.String())
 		switch t.Priority {
 		case entity.TaskPriorityMedium:
@@ -33,8 +38,19 @@ func PrintTasks(tasks []entity.Task) {
 			priority = color.RedString(priority)
 		}
 
+		// Comments formatting
+		comments := ""
+		if len(t.Comments) == 1 {
+			comments = t.Comments[0].Text
+		} else {
+			for _, c := range t.Comments {
+				comments += fmt.Sprintf("- %s\n", c.Text)
+			}
+			comments = strings.TrimSuffix(comments, "\n")
+		}
+
 		since := time.Since(t.CreatedAt).Round(time.Second).String() + " ago"
-		table.Append([]string{strconv.Itoa(t.ID), t.Name, status, priority, since})
+		table.Append([]string{strconv.Itoa(t.ID), t.Name, status, priority, since, comments})
 	}
 
 	table.Render()
