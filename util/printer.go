@@ -73,13 +73,6 @@ func PrintTasks(tasks []entity.Task) {
 func PrintTaskBoard(todo, doing, done entity.TaskList) {
 	table := tablewriter.NewWriter(os.Stdout)
 
-	// Generate caption
-	caption := ""
-	caption += fmt.Sprintf("%d todo / ", len(todo))
-	caption += color.YellowString(fmt.Sprintf("%d doing / ", len(doing)))
-	caption += color.GreenString(fmt.Sprintf("%d done", len(done)))
-	table.SetCaption(true, caption)
-
 	// Generate headers
 	table.SetAutoFormatHeaders(false)
 	table.SetHeader([]string{
@@ -128,4 +121,11 @@ func PrintTaskBoard(todo, doing, done entity.TaskList) {
 	}
 
 	table.Render()
+
+	// Print summary
+	summary := ""
+	summary += fmt.Sprintf("%d todo / ", len(todo))
+	summary += color.YellowString(fmt.Sprintf("%d doing / ", len(doing)))
+	summary += color.GreenString(fmt.Sprintf("%d done", len(done)))
+	fmt.Println(summary)
 }
