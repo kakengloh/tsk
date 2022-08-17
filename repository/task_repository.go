@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/kakengloh/tsk/entity"
@@ -163,6 +164,44 @@ func (tr *TaskRepository) UpdateTask(id int, name string, priority entity.TaskPr
 	})
 
 	return t, err
+}
+
+func (tr *TaskRepository) UpdateTaskStatus(status entity.TaskStatus, ids ...int) map[int]error {
+	type result struct {
+		ID  int
+		Err error
+	}
+
+	wg := &sync.WaitGroup{}
+	ch := make(chan result, len(ids))
+
+	for _, id := range ids {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+
+			t, err := tr.GetTaskByID(id)
+
+			if err != nil {
+				ch <- result{id, err}
+				return
+			}
+
+			t, err = tr.UpdateTask(id, t.Name, t.Priority, status)
+
+			ch <- result{id, err}
+		}(id)
+	}
+
+	wg.Wait()
+	close(ch)
+
+	res := make(map[int]error)
+	for msg := range ch {
+		res[msg.ID] = msg.Err
+	}
+
+	return res
 }
 
 func (tr *TaskRepository) DeleteTask(id int) error {

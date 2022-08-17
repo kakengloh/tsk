@@ -18,12 +18,25 @@ func NewRootCommand() *cobra.Command {
 
 func Init(tr *repository.TaskRepository) {
 	rootCmd = NewRootCommand()
+	// tsk ls
 	rootCmd.AddCommand(NewLsCommand(tr))
+	// tsk find
 	rootCmd.AddCommand(NewFindCommand(tr))
+	// tsk new
 	rootCmd.AddCommand(NewNewCommand(tr))
+	// tsk todo
+	rootCmd.AddCommand(NewTodoCommand(tr))
+	// tsk doing
+	rootCmd.AddCommand(NewDoingCommand(tr))
+	// tsk done
+	rootCmd.AddCommand(NewDoneCommand(tr))
+	// tsk mod
 	rootCmd.AddCommand(NewModCommand(tr))
+	// tsk rm
 	rootCmd.AddCommand(NewRmCommand(tr))
+	// tsk board
 	rootCmd.AddCommand(NewBoardCommand(tr))
+	// tsk cmt
 	rootCmd.AddCommand(NewCmtCommand(tr))
 }
 
