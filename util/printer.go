@@ -17,7 +17,7 @@ func ColoredStatus(status entity.TaskStatus) string {
 
 	switch status {
 	case entity.TaskStatusTodo:
-		s = color.BlackString(s)
+		s = color.BlueString(s)
 	case entity.TaskStatusDoing:
 		s = color.YellowString(s)
 	case entity.TaskStatusDone:
@@ -32,7 +32,7 @@ func ColoredPriority(status entity.TaskPriority) string {
 
 	switch status {
 	case entity.TaskPriorityLow:
-		s = color.BlackString(s)
+		s = color.BlueString(s)
 	case entity.TaskPriorityMedium:
 		s = color.YellowString(s)
 	case entity.TaskPriorityHigh:
