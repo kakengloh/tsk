@@ -177,17 +177,36 @@ func (tr *TaskRepository) UpdateTaskStatus(status entity.TaskStatus, ids ...int)
 
 	for _, id := range ids {
 		wg.Add(1)
+
 		go func(id int) {
 			defer wg.Done()
 
-			t, err := tr.GetTaskByID(id)
+			err := tr.DB.Batch(func(tx *bbolt.Tx) error {
+				b := tx.Bucket([]byte("Task"))
 
-			if err != nil {
-				ch <- result{id, err}
-				return
-			}
+				v := b.Get(util.Itob(id))
+				if v == nil {
+					return fmt.Errorf("task not found")
+				}
 
-			t, err = tr.UpdateTask(id, t.Name, t.Priority, status)
+				var t entity.Task
+
+				err := json.Unmarshal(v, &t)
+				if err != nil {
+					return err
+				}
+
+				t.Status = status
+
+				buf, err := json.Marshal(t)
+				if err != nil {
+					return err
+				}
+
+				err = b.Put(util.Itob(id), buf)
+
+				return err
+			})
 
 			ch <- result{id, err}
 		}(id)
@@ -225,7 +244,12 @@ func (tr *TaskRepository) BulkDeleteTasks(ids ...int) map[int]error {
 		wg.Add(1)
 		go func(id int) {
 			defer wg.Done()
-			err := tr.DeleteTask(id)
+
+			err := tr.DB.Batch(func(tx *bbolt.Tx) error {
+				b := tx.Bucket([]byte("Task"))
+				return b.Delete(util.Itob(id))
+			})
+
 			ch <- result{id, err}
 		}(id)
 	}

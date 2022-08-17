@@ -29,22 +29,18 @@ func NewRmCommand(tr *repository.TaskRepository) *cobra.Command {
 
 			var err error
 
-			success, failed := []string{}, []string{}
+			success := []string{}
 
 			for _, id := range ids {
 				err = res[id]
 				if err == nil {
 					success = append(success, strconv.Itoa(id))
 				} else {
-					failed = append(failed, strconv.Itoa(id))
+					fmt.Printf("Failed to delete task \"%d\": %s\n", id, err)
 				}
 			}
 
 			fmt.Printf("Task [%s] has been deleted\n", strings.Join(success, ", "))
-
-			if len(failed) > 0 {
-				fmt.Printf("Failed to delete task [%s]\n", strings.Join(failed, ", "))
-			}
 
 			return err
 		},

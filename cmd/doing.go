@@ -32,9 +32,6 @@ func NewDoingCommand(tr *repository.TaskRepository) *cobra.Command {
 			for k, v := range res {
 				if v != nil {
 					fmt.Printf("Failed to update task \"%d\": %s\n", k, v)
-					if err == nil {
-						err = fmt.Errorf("failed to update task: %w", v)
-					}
 				}
 			}
 
