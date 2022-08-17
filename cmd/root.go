@@ -16,7 +16,7 @@ func NewRootCommand() *cobra.Command {
 	}
 }
 
-func Init(tr *repository.TaskRepository) {
+func Init(tr repository.TaskRepository) {
 	rootCmd = NewRootCommand()
 	// tsk ls
 	rootCmd.AddCommand(NewLsCommand(tr))

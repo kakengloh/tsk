@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewRmCommand(tr *repository.TaskRepository) *cobra.Command {
+func NewRmCommand(tr repository.TaskRepository) *cobra.Command {
 	rmCmd := &cobra.Command{
 		Use:   "rm",
 		Short: "Remove an existing task",

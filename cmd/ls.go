@@ -5,15 +5,17 @@ import (
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
-	"github.com/kakengloh/tsk/util"
+	"github.com/kakengloh/tsk/util/printer"
 	"github.com/spf13/cobra"
 )
 
-func NewLsCommand(tr *repository.TaskRepository) *cobra.Command {
+func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 	lsCmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List tasks",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			pt := printer.New(cmd.OutOrStdout())
+
 			tasks, err := tr.ListTasks()
 
 			if err != nil {
@@ -47,11 +49,11 @@ func NewLsCommand(tr *repository.TaskRepository) *cobra.Command {
 			}
 
 			if len(tasks) == 0 {
-				fmt.Println("You don't have any task yet, use the `tsk new` command to create your first task!")
+				cmd.Println("You don't have any task yet, use the `tsk new` command to create your first task!")
 				return nil
 			}
 
-			util.PrintTaskList(tasks)
+			pt.PrintTaskList(tasks)
 
 			return nil
 		},

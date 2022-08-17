@@ -9,13 +9,15 @@ import (
 )
 
 func main() {
+	// Database
 	db, err := driver.NewBolt()
 	if err != nil {
 		log.Fatalf("failed to connect to BoltDB: %s", err)
 	}
 	defer driver.CloseBolt()
 
-	tr, err := repository.NewTaskRepository(db)
+	// Task repository
+	tr, err := repository.NewBoltTaskRepository(db)
 	if err != nil {
 		log.Fatalf("failed to initialize task repository: %s", err)
 	}

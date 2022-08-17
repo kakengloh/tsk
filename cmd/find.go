@@ -4,15 +4,17 @@ import (
 	"fmt"
 
 	"github.com/kakengloh/tsk/repository"
-	"github.com/kakengloh/tsk/util"
+	"github.com/kakengloh/tsk/util/printer"
 	"github.com/spf13/cobra"
 )
 
-func NewFindCommand(tr *repository.TaskRepository) *cobra.Command {
+func NewFindCommand(tr repository.TaskRepository) *cobra.Command {
 	return &cobra.Command{
 		Use:   "find",
 		Short: "Find tasks with keyword",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			pt := printer.New(cmd.OutOrStdout())
+
 			q := args[0]
 
 			tasks, err := tr.SearchTasks(q)
@@ -26,7 +28,7 @@ func NewFindCommand(tr *repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("failed to list tasks: %w", err)
 			}
 
-			util.PrintTaskList(tasks)
+			pt.PrintTaskList(tasks)
 
 			return nil
 		},

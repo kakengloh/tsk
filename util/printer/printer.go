@@ -1,49 +1,30 @@
-package util
+package printer
 
 import (
 	"fmt"
-	"os"
+	"io"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/fatih/color"
 	"github.com/kakengloh/tsk/entity"
+	"github.com/kakengloh/tsk/util"
 	"github.com/olekukonko/tablewriter"
 )
 
-func ColoredStatus(status entity.TaskStatus) string {
-	s := CapitalizeString(status.String())
-
-	switch status {
-	case entity.TaskStatusTodo:
-		s = color.BlueString(s)
-	case entity.TaskStatusDoing:
-		s = color.YellowString(s)
-	case entity.TaskStatusDone:
-		s = color.GreenString(s)
-	}
-
-	return s
+type Printer struct {
+	Stdout io.Writer
 }
 
-func ColoredPriority(status entity.TaskPriority) string {
-	s := CapitalizeString(status.String())
-
-	switch status {
-	case entity.TaskPriorityLow:
-		s = color.BlueString(s)
-	case entity.TaskPriorityMedium:
-		s = color.YellowString(s)
-	case entity.TaskPriorityHigh:
-		s = color.GreenString(s)
+func New(out io.Writer) *Printer {
+	return &Printer{
+		Stdout: out,
 	}
-
-	return s
 }
 
-func PrintTask(task entity.Task, caption string) {
-	table := tablewriter.NewWriter(os.Stdout)
+func (p *Printer) PrintTask(task entity.Task, caption string) {
+	table := tablewriter.NewWriter(p.Stdout)
 	table.SetRowLine(true)
 
 	// Generate caption
@@ -90,8 +71,8 @@ func PrintTask(task entity.Task, caption string) {
 	table.Render()
 }
 
-func PrintTaskList(tasks []entity.Task) {
-	table := tablewriter.NewWriter(os.Stdout)
+func (p *Printer) PrintTaskList(tasks []entity.Task) {
+	table := tablewriter.NewWriter(p.Stdout)
 	table.SetRowLine(true)
 
 	// Generate caption
@@ -139,15 +120,15 @@ func PrintTaskList(tasks []entity.Task) {
 	table.Render()
 }
 
-func PrintTaskBoard(todo, doing, done entity.TaskList) {
-	table := tablewriter.NewWriter(os.Stdout)
+func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
+	table := tablewriter.NewWriter(p.Stdout)
 
 	// Generate headers
 	table.SetAutoFormatHeaders(false)
 	table.SetHeader([]string{
-		CapitalizeString(entity.TaskStatusTodo.String()),
-		CapitalizeString(entity.TaskStatusDoing.String()),
-		CapitalizeString(entity.TaskStatusDone.String()),
+		util.CapitalizeString(entity.TaskStatusTodo.String()),
+		util.CapitalizeString(entity.TaskStatusDoing.String()),
+		util.CapitalizeString(entity.TaskStatusDone.String()),
 	})
 	table.SetHeaderColor(
 		tablewriter.Colors{tablewriter.Bold, tablewriter.FgBlackColor},
@@ -199,6 +180,36 @@ func PrintTaskBoard(todo, doing, done entity.TaskList) {
 	fmt.Println(summary)
 }
 
-func PrintStatusUpdate(name string, from, to entity.TaskStatus, padding int) {
-	fmt.Printf("%-*s: %s -> %s\n", padding, name, ColoredStatus(from), ColoredStatus(to))
+func (p *Printer) PrintStatusUpdate(name string, from, to entity.TaskStatus, padding int) {
+	fmt.Fprintf(p.Stdout, "%-*s: %s -> %s\n", padding, name, ColoredStatus(from), ColoredStatus(to))
+}
+
+func ColoredStatus(status entity.TaskStatus) string {
+	s := util.CapitalizeString(status.String())
+
+	switch status {
+	case entity.TaskStatusTodo:
+		s = color.BlueString(s)
+	case entity.TaskStatusDoing:
+		s = color.YellowString(s)
+	case entity.TaskStatusDone:
+		s = color.GreenString(s)
+	}
+
+	return s
+}
+
+func ColoredPriority(status entity.TaskPriority) string {
+	s := util.CapitalizeString(status.String())
+
+	switch status {
+	case entity.TaskPriorityLow:
+		s = color.BlueString(s)
+	case entity.TaskPriorityMedium:
+		s = color.YellowString(s)
+	case entity.TaskPriorityHigh:
+		s = color.GreenString(s)
+	}
+
+	return s
 }

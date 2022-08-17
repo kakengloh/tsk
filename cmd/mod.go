@@ -6,16 +6,18 @@ import (
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
-	"github.com/kakengloh/tsk/util"
+	"github.com/kakengloh/tsk/util/printer"
 	"github.com/spf13/cobra"
 )
 
-func NewModCommand(tr *repository.TaskRepository) *cobra.Command {
+func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 	setCmd := &cobra.Command{
 		Use:   "mod",
 		Short: "Modify an existing task",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			pt := printer.New(cmd.OutOrStdout())
+
 			id, err := strconv.Atoi(args[0])
 			if err != nil {
 				return fmt.Errorf("task ID must be an integer: %w", err)
@@ -66,7 +68,7 @@ func NewModCommand(tr *repository.TaskRepository) *cobra.Command {
 
 			t, err = tr.UpdateTask(id, name, priority, status)
 
-			util.PrintTask(t, "Task modified ✅")
+			pt.PrintTask(t, "Task modified ✅")
 
 			return err
 		},

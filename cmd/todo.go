@@ -7,15 +7,18 @@ import (
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
 	"github.com/kakengloh/tsk/util"
+	"github.com/kakengloh/tsk/util/printer"
 	"github.com/spf13/cobra"
 )
 
-func NewTodoCommand(tr *repository.TaskRepository) *cobra.Command {
+func NewTodoCommand(tr repository.TaskRepository) *cobra.Command {
 	return &cobra.Command{
 		Use:   "todo",
 		Short: "Mark task(s) as todo",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			pt := printer.New(cmd.OutOrStdout())
+
 			ids := []int{}
 
 			for _, arg := range args {
@@ -36,7 +39,7 @@ func NewTodoCommand(tr *repository.TaskRepository) *cobra.Command {
 
 			for _, r := range res {
 				if r.Err == nil {
-					util.PrintStatusUpdate(r.Task.Name, r.FromStatus, r.ToStatus, padding)
+					pt.PrintStatusUpdate(r.Task.Name, r.FromStatus, r.ToStatus, padding)
 				} else {
 					fmt.Printf("Failed to update task \"%s\": %s\n", r.Task.Name, r.Err)
 				}

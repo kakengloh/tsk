@@ -5,16 +5,18 @@ import (
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
-	"github.com/kakengloh/tsk/util"
+	"github.com/kakengloh/tsk/util/printer"
 	"github.com/spf13/cobra"
 )
 
-func NewNewCommand(tr *repository.TaskRepository) *cobra.Command {
+func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
 	mkCmd := &cobra.Command{
 		Use:   "new",
 		Short: "Create a new task",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			pt := printer.New(cmd.OutOrStdout())
+
 			// Name
 			name := args[0]
 
@@ -51,7 +53,7 @@ func NewNewCommand(tr *repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("failed to create task: %w", err)
 			}
 
-			util.PrintTask(t, "Task created ✅")
+			pt.PrintTask(t, "Task created ✅")
 
 			return nil
 		},

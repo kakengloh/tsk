@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmtCommand(tr *repository.TaskRepository) *cobra.Command {
+func NewCmtCommand(tr repository.TaskRepository) *cobra.Command {
 	return &cobra.Command{
 		Use:   "cmt",
 		Short: "Add comment to an existing task",

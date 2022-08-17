@@ -10,7 +10,7 @@
 
 ## Description
 
-tsk allows you to create and manage your tasks efficiently with few keystrokes.
+`tsk` allows you to create and manage your tasks efficiently with few keystrokes.
 
 Features:
 
@@ -25,14 +25,14 @@ Features:
 Go:
 
 ```bash
-# Go 1.17 onwards
+# Go 1.16+
 go install github.com/kakengloh/tsk@latest
 
-# Go 1.16 and older
-go get github.com/kakengloh/tsk
+# Go < 1.16
+GO111MODULE=on go get github.com/kakengloh/tsk
 ```
 
-> Ensure that $GOPATH and $GOBIN is specified on your $PATH environment variable
+> Ensure that `$GOPATH/bin` is in your `PATH`
 
 ## Usage
 
