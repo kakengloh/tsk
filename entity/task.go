@@ -9,7 +9,7 @@ type Task struct {
 	Name      string
 	Priority  TaskPriority
 	Status    TaskStatus
-	Comments  []TaskComment
+	Comments  []string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

@@ -54,16 +54,19 @@ func PrintTasks(tasks []entity.Task) {
 
 		// Comments formatting
 		comments := ""
-		if len(t.Comments) == 1 {
-			comments = t.Comments[0].Text
-		} else {
-			for _, c := range t.Comments {
-				comments += fmt.Sprintf("- %s\n", c.Text)
-			}
-			comments = strings.TrimSuffix(comments, "\n")
+		for i, c := range t.Comments {
+			comments += fmt.Sprintf("%d) %s\n", i+1, c)
+		}
+		comments = strings.TrimSuffix(comments, "\n")
+
+		// Calculate time ago
+		// Show relative time by default
+		since := time.Since(t.CreatedAt).Round(time.Second).String() + " ago"
+		// If duration is at least a week, show the exact date
+		if time.Since(t.CreatedAt).Hours() >= 168 {
+			since = t.CreatedAt.Format("02/01/2006")
 		}
 
-		since := time.Since(t.CreatedAt).Round(time.Second).String() + " ago"
 		table.Append([]string{strconv.Itoa(t.ID), t.Name, status, priority, since, comments})
 	}
 

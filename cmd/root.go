@@ -24,6 +24,7 @@ func Init(tr *repository.TaskRepository) {
 	rootCmd.AddCommand(NewModCommand(tr))
 	rootCmd.AddCommand(NewRmCommand(tr))
 	rootCmd.AddCommand(NewBoardCommand(tr))
+	rootCmd.AddCommand(NewCmtCommand(tr))
 }
 
 func Execute() {

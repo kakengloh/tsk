@@ -8,7 +8,6 @@ import (
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/util"
-	"github.com/teris-io/shortid"
 	"go.etcd.io/bbolt"
 )
 
@@ -26,14 +25,9 @@ func NewTaskRepository(db *bbolt.DB) (*TaskRepository, error) {
 }
 
 func (tr *TaskRepository) CreateTask(name string, priority entity.TaskPriority, status entity.TaskStatus, comment string) (entity.Task, error) {
-	comments := []entity.TaskComment{}
-
+	comments := []string{}
 	if comment != "" {
-		cid, _ := shortid.Generate()
-		comments = append(comments, entity.TaskComment{
-			ID:   cid,
-			Text: comment,
-		})
+		comments = append(comments, comment)
 	}
 
 	var t entity.Task
@@ -177,4 +171,32 @@ func (tr *TaskRepository) DeleteTask(id int) error {
 		return b.Delete(util.Itob(id))
 	})
 	return err
+}
+
+func (tr *TaskRepository) AddComment(id int, comment string) (entity.Task, error) {
+	var t entity.Task
+
+	err := tr.DB.Update(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("Task"))
+
+		v := b.Get(util.Itob(id))
+
+		err := json.Unmarshal(v, &t)
+		if err != nil {
+			return err
+		}
+
+		t.Comments = append(t.Comments, comment)
+
+		buf, err := json.Marshal(t)
+		if err != nil {
+			return err
+		}
+
+		err = b.Put(util.Itob(id), buf)
+
+		return err
+	})
+
+	return t, err
 }
