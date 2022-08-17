@@ -12,12 +12,42 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
+func ColoredStatus(status entity.TaskStatus) string {
+	s := CapitalizeString(status.String())
+
+	switch status {
+	case entity.TaskStatusTodo:
+		s = color.BlackString(s)
+	case entity.TaskStatusDoing:
+		s = color.YellowString(s)
+	case entity.TaskStatusDone:
+		s = color.GreenString(s)
+	}
+
+	return s
+}
+
+func ColoredPriority(status entity.TaskPriority) string {
+	s := CapitalizeString(status.String())
+
+	switch status {
+	case entity.TaskPriorityLow:
+		s = color.BlackString(s)
+	case entity.TaskPriorityMedium:
+		s = color.YellowString(s)
+	case entity.TaskPriorityHigh:
+		s = color.GreenString(s)
+	}
+
+	return s
+}
+
 func PrintTasks(tasks []entity.Task) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetRowLine(true)
 
 	// Generate caption
-	caption := fmt.Sprintf("%d in total", len(tasks))
+	caption := fmt.Sprintf("%d total", len(tasks))
 	table.SetCaption(true, caption)
 
 	// Generate headers
@@ -35,22 +65,10 @@ func PrintTasks(tasks []entity.Task) {
 	// Populate data
 	for _, t := range tasks {
 		// Status formatting
-		status := CapitalizeString(t.Status.String())
-		switch t.Status {
-		case entity.TaskStatusDoing:
-			status = color.YellowString(status)
-		case entity.TaskStatusDone:
-			status = color.GreenString(status)
-		}
+		status := ColoredStatus(t.Status)
 
 		// Priority formatting
-		priority := CapitalizeString(t.Priority.String())
-		switch t.Priority {
-		case entity.TaskPriorityMedium:
-			priority = color.YellowString(priority)
-		case entity.TaskPriorityHigh:
-			priority = color.RedString(priority)
-		}
+		priority := ColoredPriority(t.Priority)
 
 		// Comments formatting
 		comments := ""
@@ -84,7 +102,7 @@ func PrintTaskBoard(todo, doing, done entity.TaskList) {
 		CapitalizeString(entity.TaskStatusDone.String()),
 	})
 	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgBlackColor},
 		tablewriter.Colors{tablewriter.Bold, tablewriter.FgYellowColor},
 		tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
 	)
@@ -127,8 +145,12 @@ func PrintTaskBoard(todo, doing, done entity.TaskList) {
 
 	// Print summary
 	summary := ""
-	summary += fmt.Sprintf("%d todo / ", len(todo))
+	summary += color.BlackString(fmt.Sprintf("%d todo / ", len(todo)))
 	summary += color.YellowString(fmt.Sprintf("%d doing / ", len(doing)))
 	summary += color.GreenString(fmt.Sprintf("%d done", len(done)))
 	fmt.Println(summary)
+}
+
+func PrintStatusUpdate(name string, from, to entity.TaskStatus, padding int) {
+	fmt.Printf("%-*s: %s -> %s\n", padding, name, ColoredStatus(from), ColoredStatus(to))
 }

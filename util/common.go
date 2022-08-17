@@ -16,3 +16,13 @@ func Itob(v int) []byte {
 func CapitalizeString(s string) string {
 	return cases.Title(language.English, cases.Compact).String(s)
 }
+
+func MaxLen(slice []string) int {
+	max := 0
+	for _, s := range slice {
+		if len(s) > max {
+			max = len(s)
+		}
+	}
+	return max
+}

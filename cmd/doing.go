@@ -6,6 +6,7 @@ import (
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
+	"github.com/kakengloh/tsk/util"
 	"github.com/spf13/cobra"
 )
 
@@ -27,15 +28,21 @@ func NewDoingCommand(tr *repository.TaskRepository) *cobra.Command {
 
 			res := tr.UpdateTaskStatus(entity.TaskStatusDoing, ids...)
 
-			var err error
+			names := make([]string, len(res))
+			for i, r := range res {
+				names[i] = r.Task.Name
+			}
+			padding := util.MaxLen(names)
 
-			for k, v := range res {
-				if v != nil {
-					fmt.Printf("Failed to update task \"%d\": %s\n", k, v)
+			for _, r := range res {
+				if r.Err == nil {
+					util.PrintStatusUpdate(r.Task.Name, r.FromStatus, r.ToStatus, padding)
+				} else {
+					fmt.Printf("Failed to update task \"%s\": %s\n", r.Task.Name, r.Err)
 				}
 			}
 
-			return err
+			return nil
 		},
 	}
 }

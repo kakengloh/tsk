@@ -16,6 +16,13 @@ type TaskRepository struct {
 	DB *bbolt.DB
 }
 
+type UpdateTaskStatusResult struct {
+	Task       entity.Task
+	Err        error
+	FromStatus entity.TaskStatus
+	ToStatus   entity.TaskStatus
+}
+
 func NewTaskRepository(db *bbolt.DB) (*TaskRepository, error) {
 	err := db.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("Task"))
@@ -166,20 +173,17 @@ func (tr *TaskRepository) UpdateTask(id int, name string, priority entity.TaskPr
 	return t, err
 }
 
-func (tr *TaskRepository) UpdateTaskStatus(status entity.TaskStatus, ids ...int) map[int]error {
-	type result struct {
-		ID  int
-		Err error
-	}
-
+func (tr *TaskRepository) UpdateTaskStatus(status entity.TaskStatus, ids ...int) []UpdateTaskStatusResult {
 	wg := &sync.WaitGroup{}
-	ch := make(chan result, len(ids))
+	ch := make(chan UpdateTaskStatusResult, len(ids))
 
 	for _, id := range ids {
 		wg.Add(1)
 
 		go func(id int) {
 			defer wg.Done()
+
+			var r UpdateTaskStatusResult
 
 			err := tr.DB.Batch(func(tx *bbolt.Tx) error {
 				b := tx.Bucket([]byte("Task"))
@@ -196,6 +200,10 @@ func (tr *TaskRepository) UpdateTaskStatus(status entity.TaskStatus, ids ...int)
 					return err
 				}
 
+				// Snapshot previous status
+				fromStatus := t.Status
+
+				// Assign new status
 				t.Status = status
 
 				buf, err := json.Marshal(t)
@@ -205,19 +213,27 @@ func (tr *TaskRepository) UpdateTaskStatus(status entity.TaskStatus, ids ...int)
 
 				err = b.Put(util.Itob(id), buf)
 
+				r = UpdateTaskStatusResult{
+					Task:       t,
+					FromStatus: fromStatus,
+					ToStatus:   t.Status,
+				}
+
 				return err
 			})
 
-			ch <- result{id, err}
+			r.Err = err
+
+			ch <- r
 		}(id)
 	}
 
 	wg.Wait()
 	close(ch)
 
-	res := make(map[int]error)
-	for msg := range ch {
-		res[msg.ID] = msg.Err
+	res := []UpdateTaskStatusResult{}
+	for r := range ch {
+		res = append(res, r)
 	}
 
 	return res
