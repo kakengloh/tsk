@@ -26,11 +26,13 @@ Go:
 
 ```bash
 # Go 1.17 onwards
-go install github.com/kakengloh/tsk
+go install github.com/kakengloh/tsk@latest
 
 # Go 1.16 and older
 go get github.com/kakengloh/tsk
 ```
+
+> Ensure that $GOPATH and $GOBIN is specified on your $PATH environment variable
 
 ## Usage
 
