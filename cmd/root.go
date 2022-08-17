@@ -38,6 +38,8 @@ func Init(tr *repository.TaskRepository) {
 	rootCmd.AddCommand(NewBoardCommand(tr))
 	// tsk cmt
 	rootCmd.AddCommand(NewCmtCommand(tr))
+	// tsk clean
+	rootCmd.AddCommand(NewCleanCommand())
 }
 
 func Execute() {

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	db, err := driver.NewBolt("bolt.db")
+	db, err := driver.NewBolt()
 	if err != nil {
 		log.Fatalf("failed to connect to BoltDB: %s", err)
 	}
