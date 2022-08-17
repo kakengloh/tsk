@@ -100,19 +100,19 @@ func PrintTaskBoard(todo, doing, done entity.TaskList) {
 		row := []string{}
 
 		if len(todo) > i {
-			row = append(row, todo[i].Name)
+			row = append(row, fmt.Sprintf("%d) %s", todo[i].ID, todo[i].Name))
 		} else {
 			row = append(row, "")
 		}
 
 		if len(doing) > i {
-			row = append(row, doing[i].Name)
+			row = append(row, fmt.Sprintf("%d) %s", doing[i].ID, doing[i].Name))
 		} else {
 			row = append(row, "")
 		}
 
 		if len(done) > i {
-			row = append(row, done[i].Name)
+			row = append(row, fmt.Sprintf("%d) %s", done[i].ID, done[i].Name))
 		} else {
 			row = append(row, "")
 		}
