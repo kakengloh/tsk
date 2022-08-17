@@ -49,5 +49,5 @@ func RemoveBolt() error {
 		return fmt.Errorf("$HOME directory not found: %w", err)
 	}
 
-	return os.RemoveAll(filepath.Join(home, ".tsk"))
+	return os.Remove(filepath.Join(home, ".tsk", "bolt.db"))
 }
