@@ -212,6 +212,35 @@ func (tr *TaskRepository) DeleteTask(id int) error {
 	return err
 }
 
+func (tr *TaskRepository) BulkDeleteTasks(ids ...int) map[int]error {
+	type result struct {
+		ID  int
+		Err error
+	}
+
+	wg := &sync.WaitGroup{}
+	ch := make(chan result, len(ids))
+
+	for _, id := range ids {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			err := tr.DeleteTask(id)
+			ch <- result{id, err}
+		}(id)
+	}
+
+	wg.Wait()
+	close(ch)
+
+	res := make(map[int]error)
+	for msg := range ch {
+		res[msg.ID] = msg.Err
+	}
+
+	return res
+}
+
 func (tr *TaskRepository) AddComment(id int, comment string) (entity.Task, error) {
 	var t entity.Task
 
