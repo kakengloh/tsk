@@ -51,7 +51,7 @@ func NewLsCommand(tr *repository.TaskRepository) *cobra.Command {
 				return nil
 			}
 
-			util.PrintTasks(tasks)
+			util.PrintTaskList(tasks)
 
 			return nil
 		},

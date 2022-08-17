@@ -42,7 +42,55 @@ func ColoredPriority(status entity.TaskPriority) string {
 	return s
 }
 
-func PrintTasks(tasks []entity.Task) {
+func PrintTask(task entity.Task, caption string) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetRowLine(true)
+
+	// Generate caption
+	if caption != "" {
+		table.SetCaption(true, caption)
+	}
+
+	// Generate headers
+	table.SetAutoFormatHeaders(false)
+	table.SetHeader([]string{"ID", "Name", "Status", "Priority", "Created", "Comments"})
+	table.SetHeaderColor(
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+	)
+
+	// Populate data
+	// Status formatting
+	status := ColoredStatus(task.Status)
+
+	// Priority formatting
+	priority := ColoredPriority(task.Priority)
+
+	// Comments formatting
+	comments := ""
+	for i, c := range task.Comments {
+		comments += fmt.Sprintf("%d) %s\n", i+1, c)
+	}
+	comments = strings.TrimSuffix(comments, "\n")
+
+	// Calculate time ago
+	// Show relative time by default
+	since := time.Since(task.CreatedAt).Round(time.Second).String() + " ago"
+	// If duration is at least a week, show the exact date
+	if time.Since(task.CreatedAt).Hours() >= 168 {
+		since = task.CreatedAt.Format("02/01/2006")
+	}
+
+	table.Append([]string{strconv.Itoa(task.ID), task.Name, status, priority, since, comments})
+
+	table.Render()
+}
+
+func PrintTaskList(tasks []entity.Task) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetRowLine(true)
 

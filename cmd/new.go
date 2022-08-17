@@ -5,6 +5,7 @@ import (
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
+	"github.com/kakengloh/tsk/util"
 	"github.com/spf13/cobra"
 )
 
@@ -44,13 +45,13 @@ func NewNewCommand(tr *repository.TaskRepository) *cobra.Command {
 			}
 
 			// Create task
-			_, err = tr.CreateTask(name, priority, status, c)
+			t, err := tr.CreateTask(name, priority, status, c)
 
 			if err != nil {
 				return fmt.Errorf("failed to create task: %w", err)
 			}
 
-			fmt.Println("Task created!")
+			util.PrintTask(t, "Task created ✅")
 
 			return nil
 		},

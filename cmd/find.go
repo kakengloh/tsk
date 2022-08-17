@@ -26,7 +26,7 @@ func NewFindCommand(tr *repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("failed to list tasks: %w", err)
 			}
 
-			util.PrintTasks(tasks)
+			util.PrintTaskList(tasks)
 
 			return nil
 		},

@@ -6,6 +6,7 @@ import (
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
+	"github.com/kakengloh/tsk/util"
 	"github.com/spf13/cobra"
 )
 
@@ -63,7 +64,9 @@ func NewModCommand(tr *repository.TaskRepository) *cobra.Command {
 				status = v
 			}
 
-			_, err = tr.UpdateTask(id, name, priority, status)
+			t, err = tr.UpdateTask(id, name, priority, status)
+
+			util.PrintTask(t, "Task modified ✅")
 
 			return err
 		},
