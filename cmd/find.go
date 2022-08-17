@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewFindCmd(tr *repository.TaskRepository) *cobra.Command {
+func NewFindCommand(tr *repository.TaskRepository) *cobra.Command {
 	return &cobra.Command{
 		Use:   "find",
 		Short: "Find tasks with keyword",

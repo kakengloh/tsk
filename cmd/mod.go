@@ -9,10 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewSetCmd(tr *repository.TaskRepository) *cobra.Command {
+func NewModCommand(tr *repository.TaskRepository) *cobra.Command {
 	setCmd := &cobra.Command{
-		Use:   "set",
-		Short: "Set (update) an existing task",
+		Use:   "mod",
+		Short: "Modify an existing task",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])
 			if err != nil {

@@ -9,7 +9,7 @@ import (
 
 var rootCmd *cobra.Command
 
-func NewRootCmd() *cobra.Command {
+func NewRootCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "tsk",
 		Short: "tsk is a cli task management tool",
@@ -17,25 +17,13 @@ func NewRootCmd() *cobra.Command {
 }
 
 func Init(tr *repository.TaskRepository) {
-	rootCmd = NewRootCmd()
-
-	lsCmd := NewLsCmd(tr)
-	rootCmd.AddCommand(lsCmd)
-
-	findCmd := NewFindCmd(tr)
-	rootCmd.AddCommand(findCmd)
-
-	mkCmd := NewMkCmd(tr)
-	rootCmd.AddCommand(mkCmd)
-
-	setCmd := NewSetCmd(tr)
-	rootCmd.AddCommand(setCmd)
-
-	rmCmd := NewRmCmd(tr)
-	rootCmd.AddCommand(rmCmd)
-
-	boardCmd := NewBoardCmd(tr)
-	rootCmd.AddCommand(boardCmd)
+	rootCmd = NewRootCommand()
+	rootCmd.AddCommand(NewLsCommand(tr))
+	rootCmd.AddCommand(NewFindCommand(tr))
+	rootCmd.AddCommand(NewNewCommand(tr))
+	rootCmd.AddCommand(NewModCommand(tr))
+	rootCmd.AddCommand(NewRmCommand(tr))
+	rootCmd.AddCommand(NewBoardCommand(tr))
 }
 
 func Execute() {

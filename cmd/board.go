@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewBoardCmd(tr *repository.TaskRepository) *cobra.Command {
+func NewBoardCommand(tr *repository.TaskRepository) *cobra.Command {
 	lsCmd := &cobra.Command{
 		Use:   "board",
 		Short: "Display tasks in a Kanban board",

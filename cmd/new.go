@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewMkCmd(tr *repository.TaskRepository) *cobra.Command {
+func NewNewCommand(tr *repository.TaskRepository) *cobra.Command {
 	mkCmd := &cobra.Command{
-		Use:   "mk",
-		Short: "Make a new task",
+		Use:   "new",
+		Short: "Create a new task",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Name
