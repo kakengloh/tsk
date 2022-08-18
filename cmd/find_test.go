@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_LsCommand(t *testing.T) {
+func Test_FindCommand(t *testing.T) {
 	tasks := entity.TaskList{
 		entity.Task{
 			ID:   1,
@@ -23,39 +23,38 @@ func Test_LsCommand(t *testing.T) {
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().ListTasks().Return(tasks, nil)
+	tr.EXPECT().SearchTasks("coffee").Return(tasks, nil)
 
 	buf := new(bytes.Buffer)
 
-	lsCmd := cmd.NewLsCommand(tr)
-	lsCmd.SetOut(buf)
-	lsCmd.SetErr(buf)
+	findCmd := cmd.NewFindCommand(tr)
+	findCmd.SetOut(buf)
+	findCmd.SetErr(buf)
+	findCmd.SetArgs([]string{"coffee"})
 
-	err := lsCmd.Execute()
+	err := findCmd.Execute()
 	assert.NoError(t, err)
 
 	assert.Contains(t, buf.String(), "1")
 	assert.Contains(t, buf.String(), "make coffee")
-	assert.Contains(t, buf.String(), "Todo")
-	assert.Contains(t, buf.String(), "Low")
 }
 
-func Test_LsCommandWithoutTask(t *testing.T) {
+func Test_FindCommandNoResult(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	m := mock.NewMockTaskRepository(ctrl)
-	m.EXPECT().ListTasks().Return(make(entity.TaskList, 0), nil)
+	tr := mock.NewMockTaskRepository(ctrl)
+	tr.EXPECT().SearchTasks("workout").Return(make([]entity.Task, 0), nil)
 
 	buf := new(bytes.Buffer)
 
-	lsCmd := cmd.NewLsCommand(m)
-	lsCmd.SetOut(buf)
-	lsCmd.SetErr(buf)
+	findCmd := cmd.NewFindCommand(tr)
+	findCmd.SetOut(buf)
+	findCmd.SetErr(buf)
+	findCmd.SetArgs([]string{"workout"})
 
-	err := lsCmd.Execute()
+	err := findCmd.Execute()
 	assert.NoError(t, err)
 
-	expected := "You don't have any task yet, use the `tsk new` command to create your first task!\n"
-	assert.Equal(t, expected, buf.String())
+	assert.Equal(t, "No task found with keyword \"workout\"\n", buf.String())
 }

@@ -14,13 +14,12 @@ func NewFindCommand(tr repository.TaskRepository) *cobra.Command {
 		Short: "Find tasks with keyword",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pt := printer.New(cmd.OutOrStdout())
-
 			q := args[0]
 
-			tasks, err := tr.SearchTasks(q)
+			tasks, err := tr.SearchTasks(args[0])
 
 			if len(tasks) == 0 {
-				fmt.Printf("No tasks found with keyword \"%s\"\n", q)
+				cmd.Printf("No task found with keyword \"%s\"\n", q)
 				return nil
 			}
 

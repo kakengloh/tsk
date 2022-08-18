@@ -10,7 +10,7 @@ import (
 )
 
 func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
-	mkCmd := &cobra.Command{
+	newCmd := &cobra.Command{
 		Use:   "new",
 		Short: "Create a new task",
 		Args:  cobra.MinimumNArgs(1),
@@ -59,9 +59,9 @@ func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
 		},
 	}
 
-	mkCmd.PersistentFlags().StringP("priority", "p", entity.TaskPriorityLow.String(), "Priority")
-	mkCmd.PersistentFlags().StringP("status", "s", entity.TaskStatusTodo.String(), "Status")
-	mkCmd.PersistentFlags().StringP("comment", "c", "", "Comment")
+	newCmd.PersistentFlags().StringP("priority", "p", entity.TaskPriorityLow.String(), "Priority")
+	newCmd.PersistentFlags().StringP("status", "s", entity.TaskStatusTodo.String(), "Status")
+	newCmd.PersistentFlags().StringP("comment", "c", "", "Comment")
 
-	return mkCmd
+	return newCmd
 }
