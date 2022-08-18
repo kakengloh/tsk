@@ -1,6 +1,6 @@
-<!-- <p align="center">
-  <img width="250" src="">
-</p> -->
+<p align="center">
+  <img width="250" src="https://user-images.githubusercontent.com/40446720/185377062-4859d1f4-25a4-44b6-b0d2-e887ee1d1060.png" />
+</p>
 <h1 align="center"> tsk </h1>
 <p align="center">
   <b>tsk is a simple cli personal task management tool</b>
