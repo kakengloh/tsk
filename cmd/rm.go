@@ -40,7 +40,7 @@ func NewRmCommand(tr repository.TaskRepository) *cobra.Command {
 				}
 			}
 
-			fmt.Printf("Task(s) [%s] deleted ❌\n", strings.Join(success, ", "))
+			fmt.Printf("\nTask(s) [%s] deleted ❌\n", strings.Join(success, ", "))
 
 			return err
 		},

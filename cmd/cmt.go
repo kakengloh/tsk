@@ -27,7 +27,7 @@ func NewCmtCommand(tr repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("failed to add comment: %w", err)
 			}
 
-			fmt.Println("Comment is added!")
+			fmt.Println("\nComment is added!")
 
 			return nil
 		},

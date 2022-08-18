@@ -68,7 +68,9 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 
 	table.Append([]string{strconv.Itoa(task.ID), task.Name, status, priority, since, comments})
 
+	fmt.Fprintln(p.Stdout)
 	table.Render()
+	fmt.Fprintln(p.Stdout)
 }
 
 func (p *Printer) PrintTaskList(tasks []entity.Task) {
@@ -117,7 +119,9 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 		table.Append([]string{strconv.Itoa(t.ID), t.Name, status, priority, since, comments})
 	}
 
+	fmt.Fprintln(p.Stdout)
 	table.Render()
+	fmt.Fprintln(p.Stdout)
 }
 
 func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
@@ -131,7 +135,7 @@ func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
 		util.CapitalizeString(entity.TaskStatusDone.String()),
 	})
 	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Bold, tablewriter.FgBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlueColor},
 		tablewriter.Colors{tablewriter.Bold, tablewriter.FgYellowColor},
 		tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
 	)
@@ -170,18 +174,20 @@ func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
 		table.Append(row)
 	}
 
+	fmt.Fprintln(p.Stdout)
 	table.Render()
 
 	// Print summary
 	summary := ""
-	summary += color.BlackString(fmt.Sprintf("%d todo / ", len(todo)))
+	summary += color.HiBlueString(fmt.Sprintf("%d todo / ", len(todo)))
 	summary += color.YellowString(fmt.Sprintf("%d doing / ", len(doing)))
 	summary += color.GreenString(fmt.Sprintf("%d done", len(done)))
 	fmt.Println(summary)
+	fmt.Fprintln(p.Stdout)
 }
 
 func (p *Printer) PrintStatusUpdate(name string, from, to entity.TaskStatus, padding int) {
-	fmt.Fprintf(p.Stdout, "%-*s: %s -> %s\n", padding, name, ColoredStatus(from), ColoredStatus(to))
+	fmt.Fprintf(p.Stdout, "\n%-*s: %s -> %s\n\n", padding, name, ColoredStatus(from), ColoredStatus(to))
 }
 
 func ColoredStatus(status entity.TaskStatus) string {

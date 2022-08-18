@@ -17,7 +17,7 @@
 
 Features:
 
-- straightforward commands with various options
+- concise commands with various options
 - shell commands auto completion
 - works perfectly fine without internet connection
 - you own your data (data is stored in your local machine)
