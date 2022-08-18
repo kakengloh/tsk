@@ -6,7 +6,7 @@
   <b>tsk is a simple cli personal task management tool</b>
 </p>
 <p align="center">
-![Build status](https://github.com/kakengloh/tsk/actions/workflows/build.yml/badge.svg) ![Go version](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://github.com/gomods/athens) ![Go Report Card](https://goreportcard.com/badge/github.com/kakengloh/tsk)](https://goreportcard.com/report/github.com/kakengloh/tsk)
+<a href="https://github.com/kakengloh/tsk/actions/workflows/build.yml"><img src="https://github.com/kakengloh/tsk/actions/workflows/build.yml/badge.svg" /></a> <a href="https://goreportcard.com/report/github.com/kakengloh/tsk"><img src="https://goreportcard.com/badge/github.com/kakengloh/tsk" /></a> <a href="https://github.com/kakengloh/tsk"><img src="https://img.shields.io/github/go-mod/go-version/kakengloh/tsk.svg" /></a>
 </p>
 
 <br>
