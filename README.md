@@ -61,6 +61,13 @@ tsk ls
 ```
 <img width="463" alt="Screenshot 2022-08-18 at 5 15 00 PM" src="https://user-images.githubusercontent.com/40446720/185358509-10908435-daf2-4b4f-ad08-100e10086291.png">
 
+### List tasks with filters
+
+```bash
+tsk ls -s doing -p high
+```
+<img width="451" alt="Screenshot 2022-08-18 at 6 36 28 PM" src="https://user-images.githubusercontent.com/40446720/185375242-2bb16bf3-b936-4d0c-b742-d2fa808e4a00.png">
+
 ### Find tasks with a keyword
 
 ```bash
