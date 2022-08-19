@@ -20,8 +20,6 @@ func Init(tr repository.TaskRepository) {
 	rootCmd = NewRootCommand()
 	// tsk ls
 	rootCmd.AddCommand(NewLsCommand(tr))
-	// tsk find
-	rootCmd.AddCommand(NewFindCommand(tr))
 	// tsk new
 	rootCmd.AddCommand(NewNewCommand(tr))
 	// tsk todo

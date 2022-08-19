@@ -65,7 +65,11 @@ func (tr *BoltTaskRepository) CreateTask(title string, priority entity.TaskPrior
 	return t, nil
 }
 
-func (tr *BoltTaskRepository) ListTasks() (entity.TaskList, error) {
+func (tr *BoltTaskRepository) ListTasks(
+	status entity.TaskStatus,
+	priority entity.TaskPriority,
+	keyword string,
+) (entity.TaskList, error) {
 	tasks := entity.TaskList{}
 
 	err := tr.DB.View(func(tx *bbolt.Tx) error {
@@ -76,34 +80,30 @@ func (tr *BoltTaskRepository) ListTasks() (entity.TaskList, error) {
 			err := json.Unmarshal(v, &t)
 			if err != nil {
 				return err
+			}
+
+			// Filter by status
+			if status != entity.TaskStatusNone {
+				if status != t.Status {
+					return nil
+				}
+			}
+
+			// Filter by priority
+			if priority != entity.TaskPriorityNone {
+				if priority != t.Priority {
+					return nil
+				}
+			}
+
+			// Filter by keyword
+			if keyword != "" {
+				if !strings.Contains(strings.ToLower(t.Title), strings.ToLower(keyword)) {
+					return nil
+				}
 			}
 
 			tasks = append(tasks, t)
-			return nil
-		})
-
-		return err
-	})
-
-	return tasks, err
-}
-
-func (tr *BoltTaskRepository) SearchTasks(q string) (entity.TaskList, error) {
-	tasks := entity.TaskList{}
-
-	err := tr.DB.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket([]byte("Task"))
-		err := b.ForEach(func(k, v []byte) error {
-			var t entity.Task
-
-			err := json.Unmarshal(v, &t)
-			if err != nil {
-				return err
-			}
-
-			if strings.Contains(strings.ToLower(t.Title), strings.ToLower(q)) {
-				tasks = append(tasks, t)
-			}
 
 			return nil
 		})

@@ -14,8 +14,10 @@ import (
 func Test_LsCommand(t *testing.T) {
 	tasks := entity.TaskList{
 		entity.Task{
-			ID:    1,
-			Title: "make coffee",
+			ID:       1,
+			Title:    "make coffee",
+			Status:   entity.TaskStatusTodo,
+			Priority: entity.TaskPriorityLow,
 		},
 	}
 
@@ -23,7 +25,7 @@ func Test_LsCommand(t *testing.T) {
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().ListTasks().Return(tasks, nil)
+	tr.EXPECT().ListTasks(gomock.Any(), gomock.Any(), gomock.Any()).Return(tasks, nil)
 
 	buf := new(bytes.Buffer)
 
@@ -45,7 +47,7 @@ func Test_LsCommandWithoutTask(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := mock.NewMockTaskRepository(ctrl)
-	m.EXPECT().ListTasks().Return(make(entity.TaskList, 0), nil)
+	m.EXPECT().ListTasks(gomock.Any(), gomock.Any(), gomock.Any()).Return(make(entity.TaskList, 0), nil)
 
 	buf := new(bytes.Buffer)
 
@@ -58,4 +60,32 @@ func Test_LsCommandWithoutTask(t *testing.T) {
 
 	expected := "You don't have any task yet, use the `tsk new` command to create your first task!\n"
 	assert.Equal(t, expected, buf.String())
+}
+
+func Test_LsCommandWithKeyword(t *testing.T) {
+	tasks := entity.TaskList{
+		entity.Task{
+			ID:    1,
+			Title: "make coffee",
+		},
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tr := mock.NewMockTaskRepository(ctrl)
+	tr.EXPECT().ListTasks(gomock.Any(), gomock.Any(), "coffee").Return(tasks, nil)
+
+	buf := new(bytes.Buffer)
+
+	lsCmd := cmd.NewLsCommand(tr)
+	lsCmd.SetOut(buf)
+	lsCmd.SetErr(buf)
+	lsCmd.SetArgs([]string{"coffee"})
+
+	err := lsCmd.Execute()
+	assert.NoError(t, err)
+
+	assert.Contains(t, buf.String(), "1")
+	assert.Contains(t, buf.String(), "make coffee")
 }

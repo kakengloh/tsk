@@ -196,7 +196,7 @@ func ColoredPriority(status entity.TaskPriority) string {
 	case entity.TaskPriorityMedium:
 		s = color.YellowString(s)
 	case entity.TaskPriorityHigh:
-		s = color.GreenString(s)
+		s = color.RedString(s)
 	}
 
 	return s

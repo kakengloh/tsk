@@ -13,7 +13,9 @@ import (
 
 func Test_NewCommand(t *testing.T) {
 	task := entity.Task{
-		Title: "make coffee",
+		Title:    "make coffee",
+		Status:   entity.TaskStatusTodo,
+		Priority: entity.TaskPriorityLow,
 	}
 
 	ctrl := gomock.NewController(t)

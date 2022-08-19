@@ -118,33 +118,18 @@ func (mr *MockTaskRepositoryMockRecorder) GetTaskByID(arg0 interface{}) *gomock.
 }
 
 // ListTasks mocks base method.
-func (m *MockTaskRepository) ListTasks() (entity.TaskList, error) {
+func (m *MockTaskRepository) ListTasks(arg0 entity.TaskStatus, arg1 entity.TaskPriority, arg2 string) (entity.TaskList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListTasks")
+	ret := m.ctrl.Call(m, "ListTasks", arg0, arg1, arg2)
 	ret0, _ := ret[0].(entity.TaskList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListTasks indicates an expected call of ListTasks.
-func (mr *MockTaskRepositoryMockRecorder) ListTasks() *gomock.Call {
+func (mr *MockTaskRepositoryMockRecorder) ListTasks(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTasks", reflect.TypeOf((*MockTaskRepository)(nil).ListTasks))
-}
-
-// SearchTasks mocks base method.
-func (m *MockTaskRepository) SearchTasks(arg0 string) (entity.TaskList, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SearchTasks", arg0)
-	ret0, _ := ret[0].(entity.TaskList)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// SearchTasks indicates an expected call of SearchTasks.
-func (mr *MockTaskRepositoryMockRecorder) SearchTasks(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchTasks", reflect.TypeOf((*MockTaskRepository)(nil).SearchTasks), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTasks", reflect.TypeOf((*MockTaskRepository)(nil).ListTasks), arg0, arg1, arg2)
 }
 
 // UpdateTask mocks base method.

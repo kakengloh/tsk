@@ -13,39 +13,48 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 	lsCmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List tasks",
+		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pt := printer.New(cmd.OutOrStdout())
 
-			tasks, err := tr.ListTasks()
-
-			if err != nil {
-				return fmt.Errorf("failed to list tasks: %w", err)
-			}
-
-			// Priority filter
-			p, err := cmd.Flags().GetString("priority")
-			if err != nil {
-				return err
-			}
-			if p != "" {
-				priority, ok := entity.TaskPriorityFromString[p]
-				if !ok {
-					return fmt.Errorf("invalid priority: %s, valid values are [low, medium, high]", p)
-				}
-				tasks = tasks.FilterByPriority(priority)
-			}
-
 			// Status filter
+			var status entity.TaskStatus = 0
 			s, err := cmd.Flags().GetString("status")
 			if err != nil {
 				return err
 			}
 			if s != "" {
-				status, ok := entity.TaskStatusFromString[s]
+				val, ok := entity.TaskStatusFromString[s]
 				if !ok {
 					return fmt.Errorf("invalid status: %s, valid values are [todo, doing, done]", s)
 				}
-				tasks = tasks.FilterByStatus(status)
+				status = val
+			}
+
+			// Priority filter
+			var priority entity.TaskPriority = 0
+			p, err := cmd.Flags().GetString("priority")
+			if err != nil {
+				return err
+			}
+			if p != "" {
+				val, ok := entity.TaskPriorityFromString[p]
+				if !ok {
+					return fmt.Errorf("invalid priority: %s, valid values are [low, medium, high]", p)
+				}
+				priority = val
+			}
+
+			// Keyword filter
+			keyword := ""
+			if len(args) > 0 {
+				keyword = args[0]
+			}
+
+			tasks, err := tr.ListTasks(status, priority, keyword)
+
+			if err != nil {
+				return fmt.Errorf("failed to list tasks: %w", err)
 			}
 
 			if len(tasks) == 0 {
@@ -59,8 +68,8 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 		},
 	}
 
-	lsCmd.PersistentFlags().StringP("priority", "p", "", "Filter by priority")
 	lsCmd.PersistentFlags().StringP("status", "s", "", "Filter by status")
+	lsCmd.PersistentFlags().StringP("priority", "p", "", "Filter by priority")
 
 	return lsCmd
 }

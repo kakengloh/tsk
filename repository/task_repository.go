@@ -4,8 +4,7 @@ import "github.com/kakengloh/tsk/entity"
 
 type TaskRepository interface {
 	CreateTask(title string, priority entity.TaskPriority, status entity.TaskStatus, note string) (entity.Task, error)
-	ListTasks() (entity.TaskList, error)
-	SearchTasks(q string) (entity.TaskList, error)
+	ListTasks(status entity.TaskStatus, priority entity.TaskPriority, keyword string) (entity.TaskList, error)
 	GetTaskByID(id int) (entity.Task, error)
 	UpdateTask(id int, title string, priority entity.TaskPriority, status entity.TaskStatus) (entity.Task, error)
 	UpdateTaskStatus(status entity.TaskStatus, ids ...int) []UpdateTaskStatusResult

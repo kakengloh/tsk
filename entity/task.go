@@ -17,18 +17,21 @@ type Task struct {
 type TaskPriority int
 
 const (
-	TaskPriorityLow TaskPriority = iota
+	TaskPriorityNone TaskPriority = iota
+	TaskPriorityLow
 	TaskPriorityMedium
 	TaskPriorityHigh
 )
 
 var TaskPriorityToString = map[TaskPriority]string{
+	TaskPriorityNone:   "",
 	TaskPriorityLow:    "low",
 	TaskPriorityMedium: "medium",
 	TaskPriorityHigh:   "high",
 }
 
 var TaskPriorityFromString = map[string]TaskPriority{
+	"":       TaskPriorityNone,
 	"low":    TaskPriorityLow,
 	"medium": TaskPriorityMedium,
 	"high":   TaskPriorityHigh,
@@ -41,18 +44,21 @@ func (p TaskPriority) String() string {
 type TaskStatus int
 
 const (
-	TaskStatusTodo TaskStatus = iota
+	TaskStatusNone TaskStatus = iota
+	TaskStatusTodo
 	TaskStatusDoing
 	TaskStatusDone
 )
 
 var TaskStatusToString = map[TaskStatus]string{
+	TaskStatusNone:  "",
 	TaskStatusTodo:  "todo",
 	TaskStatusDoing: "doing",
 	TaskStatusDone:  "done",
 }
 
 var TaskStatusFromString = map[string]TaskStatus{
+	"":      TaskStatusNone,
 	"todo":  TaskStatusTodo,
 	"doing": TaskStatusDoing,
 	"done":  TaskStatusDone,
