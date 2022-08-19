@@ -3,7 +3,7 @@
 </p>
 <h1 align="center"> tsk </h1>
 <p align="center">
-  <b>tsk is a simple cli personal task management tool</b>
+  <b>tsk is a terminal task management app with an emphasis on simplicity, efficiency and ease of use</b>
 </p>
 <p align="center">
 <a href="https://github.com/kakengloh/tsk/actions/workflows/build.yml"><img src="https://github.com/kakengloh/tsk/actions/workflows/build.yml/badge.svg" /></a> <a href="https://goreportcard.com/report/github.com/kakengloh/tsk"><img src="https://goreportcard.com/badge/github.com/kakengloh/tsk" /></a> <a href="https://github.com/kakengloh/tsk"><img src="https://img.shields.io/github/go-mod/go-version/kakengloh/tsk.svg" /></a>
@@ -13,15 +13,18 @@
 
 ## Description
 
-`tsk` allows you to create and manage your tasks efficiently with few keystrokes.
+`tsk` allows you to create and manage your tasks efficiently your terminal, so that you can dump your mouse 🖱️
 
-Features:
+## Why
+Shiny task management web apps often have tons of unnecessary features causing UI glitches which impact our UX 😵‍💫 <br> The huge JS chunks loading and network calls on every smallest action causing feedback delay and it is annoying ⌛
 
-- concise commands with various options
-- shell commands auto completion
-- works perfectly fine without internet connection
-- you own your data (data is stored in your local machine)
-- clean user interface
+Personal task management should be as simple as possible, let's build a snappy cli app that doesn't get in our way ✌️
+
+## Features
+
+- Simple and concise commands ✅
+- Works without internet connection ✅
+- Data stored locally - powered by [BoltDB](https://github.com/etcd-io/bbolt) ✅
 
 ## Installation
 
