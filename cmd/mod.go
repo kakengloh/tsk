@@ -75,8 +75,8 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 	}
 
 	setCmd.PersistentFlags().StringP("title", "t", "", "Set title")
-	setCmd.PersistentFlags().StringP("priority", "p", "", "Set priority")
-	setCmd.PersistentFlags().StringP("status", "s", "", "Set status")
+	setCmd.PersistentFlags().StringP("status", "s", "", "Set status (todo / doing / done)")
+	setCmd.PersistentFlags().StringP("priority", "p", "", "Set priority (low / medium / high")
 
 	return setCmd
 }

@@ -68,8 +68,8 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 		},
 	}
 
-	lsCmd.PersistentFlags().StringP("status", "s", "", "Filter by status")
-	lsCmd.PersistentFlags().StringP("priority", "p", "", "Filter by priority")
+	lsCmd.PersistentFlags().StringP("status", "s", "", "Filter by status (todo / doing / done)")
+	lsCmd.PersistentFlags().StringP("priority", "p", "", "Filter by priority (low / medium / high)")
 
 	return lsCmd
 }
