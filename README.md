@@ -28,7 +28,7 @@ Personal task management should be as simple as possible, let's build a snappy c
 
 ## Installation
 
-Go:
+### Go
 
 ```bash
 # Go 1.16+
@@ -39,6 +39,10 @@ GO111MODULE=on go get github.com/kakengloh/tsk
 ```
 
 > Ensure that `$GOPATH/bin` is in your `PATH`
+
+### Executables
+
+See [releases](https://github.com/kakengloh/tsk/releases) for executables
 
 ## Example
 
