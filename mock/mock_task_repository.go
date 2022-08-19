@@ -35,19 +35,24 @@ func (m *MockTaskRepository) EXPECT() *MockTaskRepositoryMockRecorder {
 	return m.recorder
 }
 
-// AddComment mocks base method.
-func (m *MockTaskRepository) AddComment(arg0 int, arg1 string) (entity.Task, error) {
+// AddNotes mocks base method.
+func (m *MockTaskRepository) AddNotes(arg0 int, arg1 ...string) (entity.Task, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddComment", arg0, arg1)
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AddNotes", varargs...)
 	ret0, _ := ret[0].(entity.Task)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// AddComment indicates an expected call of AddComment.
-func (mr *MockTaskRepositoryMockRecorder) AddComment(arg0, arg1 interface{}) *gomock.Call {
+// AddNotes indicates an expected call of AddNotes.
+func (mr *MockTaskRepositoryMockRecorder) AddNotes(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddComment", reflect.TypeOf((*MockTaskRepository)(nil).AddComment), arg0, arg1)
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddNotes", reflect.TypeOf((*MockTaskRepository)(nil).AddNotes), varargs...)
 }
 
 // BulkDeleteTasks mocks base method.

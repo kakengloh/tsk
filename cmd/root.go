@@ -37,7 +37,7 @@ func Init(tr repository.TaskRepository) {
 	// tsk board
 	rootCmd.AddCommand(NewBoardCommand(tr))
 	// tsk cmt
-	rootCmd.AddCommand(NewCmtCommand(tr))
+	rootCmd.AddCommand(NewNoteCommand(tr))
 	// tsk clean
 	rootCmd.AddCommand(NewCleanCommand())
 }

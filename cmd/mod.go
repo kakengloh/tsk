@@ -23,23 +23,23 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("task ID must be an integer: %w", err)
 			}
 
-			t, err := tr.GetTaskByID(id)
+			task, err := tr.GetTaskByID(id)
 			if err != nil {
 				return fmt.Errorf("task not found")
 			}
 
-			// Name
-			name := t.Name
-			n, err := cmd.Flags().GetString("name")
+			// Title
+			title := task.Title
+			t, err := cmd.Flags().GetString("title")
 			if err != nil {
 				return err
 			}
-			if n != "" {
-				name = n
+			if t != "" {
+				title = t
 			}
 
 			// Priority
-			priority := t.Priority
+			priority := task.Priority
 			p, err := cmd.Flags().GetString("priority")
 			if err != nil {
 				return err
@@ -53,7 +53,7 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 			}
 
 			// Status
-			status := t.Status
+			status := task.Status
 			s, err := cmd.Flags().GetString("status")
 			if err != nil {
 				return err
@@ -66,15 +66,15 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 				status = v
 			}
 
-			t, err = tr.UpdateTask(id, name, priority, status)
+			task, err = tr.UpdateTask(id, title, priority, status)
 
-			pt.PrintTask(t, "Task modified ✅")
+			pt.PrintTask(task, "Task modified ✅")
 
 			return err
 		},
 	}
 
-	setCmd.PersistentFlags().StringP("name", "n", "", "Set name")
+	setCmd.PersistentFlags().StringP("title", "t", "", "Set title")
 	setCmd.PersistentFlags().StringP("priority", "p", "", "Set priority")
 	setCmd.PersistentFlags().StringP("status", "s", "", "Set status")
 

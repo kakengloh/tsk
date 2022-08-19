@@ -14,8 +14,8 @@ import (
 func Test_FindCommand(t *testing.T) {
 	tasks := entity.TaskList{
 		entity.Task{
-			ID:   1,
-			Name: "make coffee",
+			ID:    1,
+			Title: "make coffee",
 		},
 	}
 

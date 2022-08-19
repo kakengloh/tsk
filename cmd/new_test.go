@@ -13,14 +13,14 @@ import (
 
 func Test_NewCommand(t *testing.T) {
 	task := entity.Task{
-		Name: "make coffee",
+		Title: "make coffee",
 	}
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().CreateTask(task.Name, task.Priority, task.Status, "").Return(task, nil)
+	tr.EXPECT().CreateTask(task.Title, task.Priority, task.Status, "").Return(task, nil)
 
 	buf := new(bytes.Buffer)
 
@@ -40,17 +40,17 @@ func Test_NewCommand(t *testing.T) {
 
 func Test_NewCommandWithOptions(t *testing.T) {
 	task := entity.Task{
-		Name:     "make coffee",
+		Title:    "make coffee",
 		Priority: entity.TaskPriorityMedium,
 		Status:   entity.TaskStatusDoing,
-		Comments: []string{"long black"},
+		Notes:    []string{"long black"},
 	}
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().CreateTask(task.Name, task.Priority, task.Status, task.Comments[0]).Return(task, nil)
+	tr.EXPECT().CreateTask(task.Title, task.Priority, task.Status, task.Notes[0]).Return(task, nil)
 
 	buf := new(bytes.Buffer)
 
@@ -61,7 +61,7 @@ func Test_NewCommandWithOptions(t *testing.T) {
 		"make coffee",
 		"-p=medium",
 		"-s=doing",
-		"-c=long black",
+		"-n=long black",
 	})
 
 	err := newCmd.Execute()

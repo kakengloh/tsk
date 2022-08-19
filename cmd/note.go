@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmtCommand(tr repository.TaskRepository) *cobra.Command {
+func NewNoteCommand(tr repository.TaskRepository) *cobra.Command {
 	return &cobra.Command{
-		Use:   "cmt",
-		Short: "Add comment to an existing task",
+		Use:   "note",
+		Short: "Add notes to an existing task",
 		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])
@@ -19,15 +19,13 @@ func NewCmtCommand(tr repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("task ID must be an integer: %w", err)
 			}
 
-			comment := args[1]
-
-			_, err = tr.AddComment(id, comment)
+			_, err = tr.AddNotes(id, args[1:]...)
 
 			if err != nil {
-				return fmt.Errorf("failed to add comment: %w", err)
+				return fmt.Errorf("failed to add note(s): %w", err)
 			}
 
-			fmt.Println("\nComment is added!")
+			fmt.Println("\nNote(s) added!")
 
 			return nil
 		},

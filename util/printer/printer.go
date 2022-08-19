@@ -26,6 +26,7 @@ func New(out io.Writer) *Printer {
 func (p *Printer) PrintTask(task entity.Task, caption string) {
 	table := tablewriter.NewWriter(p.Stdout)
 	table.SetRowLine(true)
+	table.SetAutoWrapText(false)
 
 	// Generate caption
 	if caption != "" {
@@ -34,7 +35,7 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 
 	// Generate headers
 	table.SetAutoFormatHeaders(false)
-	table.SetHeader([]string{"ID", "Name", "Status", "Priority", "Created", "Comments"})
+	table.SetHeader([]string{"ID", "Title", "Status", "Priority", "Created", "Notes"})
 	table.SetHeaderColor(
 		tablewriter.Colors{tablewriter.Bold},
 		tablewriter.Colors{tablewriter.Bold},
@@ -51,12 +52,12 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 	// Priority formatting
 	priority := ColoredPriority(task.Priority)
 
-	// Comments formatting
-	comments := ""
-	for i, c := range task.Comments {
-		comments += fmt.Sprintf("%d) %s\n", i+1, c)
+	// Notes formatting
+	notes := ""
+	for i, c := range task.Notes {
+		notes += fmt.Sprintf("%d) %s\n", i+1, c)
 	}
-	comments = strings.TrimSuffix(comments, "\n")
+	notes = strings.TrimSuffix(notes, "\n")
 
 	// Calculate time ago
 	// Show relative time by default
@@ -66,7 +67,7 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 		since = task.CreatedAt.Format("02/01/2006")
 	}
 
-	table.Append([]string{strconv.Itoa(task.ID), task.Name, status, priority, since, comments})
+	table.Append([]string{strconv.Itoa(task.ID), task.Title, status, priority, since, notes})
 
 	fmt.Fprintln(p.Stdout)
 	table.Render()
@@ -76,6 +77,7 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 func (p *Printer) PrintTaskList(tasks []entity.Task) {
 	table := tablewriter.NewWriter(p.Stdout)
 	table.SetRowLine(true)
+	table.SetAutoWrapText(false)
 
 	// Generate caption
 	caption := fmt.Sprintf("%d total", len(tasks))
@@ -83,7 +85,7 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 
 	// Generate headers
 	table.SetAutoFormatHeaders(false)
-	table.SetHeader([]string{"ID", "Name", "Status", "Priority", "Created", "Comments"})
+	table.SetHeader([]string{"ID", "Title", "Status", "Priority", "Created", "Notes"})
 	table.SetHeaderColor(
 		tablewriter.Colors{tablewriter.Bold},
 		tablewriter.Colors{tablewriter.Bold},
@@ -101,12 +103,12 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 		// Priority formatting
 		priority := ColoredPriority(t.Priority)
 
-		// Comments formatting
-		comments := ""
-		for i, c := range t.Comments {
-			comments += fmt.Sprintf("%d) %s\n", i+1, c)
+		// Notes formatting
+		notes := ""
+		for i, n := range t.Notes {
+			notes += fmt.Sprintf("%d) %s\n", i+1, n)
 		}
-		comments = strings.TrimSuffix(comments, "\n")
+		notes = strings.TrimSuffix(notes, "\n")
 
 		// Calculate time ago
 		// Show relative time by default
@@ -116,7 +118,7 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 			since = t.CreatedAt.Format("02/01/2006")
 		}
 
-		table.Append([]string{strconv.Itoa(t.ID), t.Name, status, priority, since, comments})
+		table.Append([]string{strconv.Itoa(t.ID), t.Title, status, priority, since, notes})
 	}
 
 	fmt.Fprintln(p.Stdout)
@@ -126,6 +128,7 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 
 func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
 	table := tablewriter.NewWriter(p.Stdout)
+	table.SetAutoWrapText(false)
 
 	// Generate headers
 	table.SetAutoFormatHeaders(false)
@@ -140,39 +143,18 @@ func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
 		tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
 	)
 
-	// Calculate max rows
-	max := len(todo)
-	if len(doing) > max {
-		max = len(doing)
-	}
-	if len(done) > max {
-		max = len(done)
-	}
+	lists := []entity.TaskList{todo, doing, done}
+	row := make([]string, len(lists))
 
-	// Populate data
-	for i := 0; i < max; i++ {
-		row := []string{}
-
-		if len(todo) > i {
-			row = append(row, fmt.Sprintf("%d) %s", todo[i].ID, todo[i].Name))
-		} else {
-			row = append(row, "")
+	for i, tasks := range lists {
+		content := ""
+		for _, t := range tasks {
+			content += fmt.Sprintf("%d) %s\n", t.ID, t.Title)
 		}
-
-		if len(doing) > i {
-			row = append(row, fmt.Sprintf("%d) %s", doing[i].ID, doing[i].Name))
-		} else {
-			row = append(row, "")
-		}
-
-		if len(done) > i {
-			row = append(row, fmt.Sprintf("%d) %s", done[i].ID, done[i].Name))
-		} else {
-			row = append(row, "")
-		}
-
-		table.Append(row)
+		row[i] = strings.TrimSuffix(content, "\n")
 	}
+
+	table.Append(row)
 
 	fmt.Fprintln(p.Stdout)
 	table.Render()
@@ -182,12 +164,12 @@ func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
 	summary += color.HiBlueString(fmt.Sprintf("%d todo / ", len(todo)))
 	summary += color.YellowString(fmt.Sprintf("%d doing / ", len(doing)))
 	summary += color.GreenString(fmt.Sprintf("%d done", len(done)))
-	fmt.Println(summary)
+	fmt.Fprintln(p.Stdout, summary)
 	fmt.Fprintln(p.Stdout)
 }
 
-func (p *Printer) PrintStatusUpdate(name string, from, to entity.TaskStatus, padding int) {
-	fmt.Fprintf(p.Stdout, "\n%-*s: %s -> %s\n\n", padding, name, ColoredStatus(from), ColoredStatus(to))
+func (p *Printer) PrintStatusUpdate(title string, from, to entity.TaskStatus, padding int) {
+	fmt.Fprintf(p.Stdout, "\n%-*s: %s -> %s\n\n", padding, title, ColoredStatus(from), ColoredStatus(to))
 }
 
 func ColoredStatus(status entity.TaskStatus) string {

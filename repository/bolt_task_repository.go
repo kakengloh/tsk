@@ -25,10 +25,10 @@ func NewBoltTaskRepository(db *bbolt.DB) (*BoltTaskRepository, error) {
 	return &BoltTaskRepository{db}, err
 }
 
-func (tr *BoltTaskRepository) CreateTask(name string, priority entity.TaskPriority, status entity.TaskStatus, comment string) (entity.Task, error) {
-	comments := []string{}
-	if comment != "" {
-		comments = append(comments, comment)
+func (tr *BoltTaskRepository) CreateTask(title string, priority entity.TaskPriority, status entity.TaskStatus, note string) (entity.Task, error) {
+	notes := []string{}
+	if note != "" {
+		notes = append(notes, note)
 	}
 
 	var t entity.Task
@@ -40,10 +40,10 @@ func (tr *BoltTaskRepository) CreateTask(name string, priority entity.TaskPriori
 
 		t = entity.Task{
 			ID:        int(id),
-			Name:      name,
+			Title:     title,
 			Priority:  priority,
 			Status:    status,
-			Comments:  comments,
+			Notes:     notes,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
@@ -101,7 +101,7 @@ func (tr *BoltTaskRepository) SearchTasks(q string) (entity.TaskList, error) {
 				return err
 			}
 
-			if strings.Contains(strings.ToLower(t.Name), strings.ToLower(q)) {
+			if strings.Contains(strings.ToLower(t.Title), strings.ToLower(q)) {
 				tasks = append(tasks, t)
 			}
 
@@ -130,7 +130,7 @@ func (tr *BoltTaskRepository) GetTaskByID(id int) (entity.Task, error) {
 	return t, err
 }
 
-func (tr *BoltTaskRepository) UpdateTask(id int, name string, priority entity.TaskPriority, status entity.TaskStatus) (entity.Task, error) {
+func (tr *BoltTaskRepository) UpdateTask(id int, title string, priority entity.TaskPriority, status entity.TaskStatus) (entity.Task, error) {
 	var t entity.Task
 
 	err := tr.DB.Update(func(tx *bbolt.Tx) error {
@@ -146,8 +146,8 @@ func (tr *BoltTaskRepository) UpdateTask(id int, name string, priority entity.Ta
 			return err
 		}
 
-		if name != "" {
-			t.Name = name
+		if title != "" {
+			t.Title = title
 		}
 
 		t.Priority = priority
@@ -274,7 +274,7 @@ func (tr *BoltTaskRepository) BulkDeleteTasks(ids ...int) map[int]error {
 	return res
 }
 
-func (tr *BoltTaskRepository) AddComment(id int, comment string) (entity.Task, error) {
+func (tr *BoltTaskRepository) AddNotes(id int, notes ...string) (entity.Task, error) {
 	var t entity.Task
 
 	err := tr.DB.Update(func(tx *bbolt.Tx) error {
@@ -287,7 +287,7 @@ func (tr *BoltTaskRepository) AddComment(id int, comment string) (entity.Task, e
 			return err
 		}
 
-		t.Comments = append(t.Comments, comment)
+		t.Notes = append(t.Notes, notes...)
 
 		buf, err := json.Marshal(t)
 		if err != nil {

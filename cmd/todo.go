@@ -31,17 +31,17 @@ func NewTodoCommand(tr repository.TaskRepository) *cobra.Command {
 
 			res := tr.UpdateTaskStatus(entity.TaskStatusTodo, ids...)
 
-			names := make([]string, len(res))
+			titles := make([]string, len(res))
 			for i, r := range res {
-				names[i] = r.Task.Name
+				titles[i] = r.Task.Title
 			}
-			padding := util.MaxLen(names)
+			padding := util.MaxLen(titles)
 
 			for _, r := range res {
 				if r.Err == nil {
-					pt.PrintStatusUpdate(r.Task.Name, r.FromStatus, r.ToStatus, padding)
+					pt.PrintStatusUpdate(r.Task.Title, r.FromStatus, r.ToStatus, padding)
 				} else {
-					fmt.Printf("Failed to update task \"%s\": %s\n", r.Task.Name, r.Err)
+					fmt.Printf("Failed to update task \"%s\": %s\n", r.Task.Title, r.Err)
 				}
 			}
 

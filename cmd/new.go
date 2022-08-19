@@ -17,8 +17,8 @@ func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pt := printer.New(cmd.OutOrStdout())
 
-			// Name
-			name := args[0]
+			// Title
+			title := args[0]
 
 			// Priority
 			p, err := cmd.Flags().GetString("priority")
@@ -40,14 +40,14 @@ func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("invalid status: %s, valid values are [todo, doing, done]", s)
 			}
 
-			// Comment
-			c, err := cmd.Flags().GetString("comment")
+			// Note
+			n, err := cmd.Flags().GetString("note")
 			if err != nil {
 				return err
 			}
 
 			// Create task
-			t, err := tr.CreateTask(name, priority, status, c)
+			t, err := tr.CreateTask(title, priority, status, n)
 
 			if err != nil {
 				return fmt.Errorf("failed to create task: %w", err)
@@ -61,7 +61,7 @@ func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
 
 	newCmd.PersistentFlags().StringP("priority", "p", entity.TaskPriorityLow.String(), "Priority")
 	newCmd.PersistentFlags().StringP("status", "s", entity.TaskStatusTodo.String(), "Status")
-	newCmd.PersistentFlags().StringP("comment", "c", "", "Comment")
+	newCmd.PersistentFlags().StringP("note", "n", "", "Note")
 
 	return newCmd
 }

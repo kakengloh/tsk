@@ -6,10 +6,10 @@ import (
 
 type Task struct {
 	ID        int
-	Name      string
+	Title     string
 	Priority  TaskPriority
 	Status    TaskStatus
-	Comments  []string
+	Notes     []string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -60,11 +60,6 @@ var TaskStatusFromString = map[string]TaskStatus{
 
 func (s TaskStatus) String() string {
 	return TaskStatusToString[s]
-}
-
-type TaskComment struct {
-	ID   string
-	Text string
 }
 
 type TaskList []Task
