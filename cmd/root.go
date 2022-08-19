@@ -12,7 +12,7 @@ var rootCmd *cobra.Command
 func NewRootCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "tsk",
-		Short: "tsk is a cli task management tool",
+		Short: "tsk is a terminal task management app with an emphasis on simplicity, efficiency and ease of use",
 	}
 }
 
