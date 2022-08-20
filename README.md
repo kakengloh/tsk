@@ -131,3 +131,15 @@ tsk rm 1 2 # example
 ```
 
 <img width="195" alt="tsk rm output" src="https://user-images.githubusercontent.com/40446720/185359793-faa50ea3-9466-4b95-9dc7-b8ecdea0782d.png">
+
+### Clean your data
+
+```bash
+tsk clean
+```
+
+## Todo
+- [ ] Task deadline and reminder (via desktop notification)
+
+## Contributing
+We welcome all feature requests and pull requests! 🙋
