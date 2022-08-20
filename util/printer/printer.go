@@ -35,15 +35,13 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 
 	// Generate headers
 	table.SetAutoFormatHeaders(false)
-	table.SetHeader([]string{"ID", "Title", "Status", "Priority", "Created", "Notes"})
-	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-	)
+	headers := []string{"ID", "Title", "Status", "Priority", "Created", "Due", "Notes"}
+	headerColors := make([]tablewriter.Colors, len(headers))
+	for i := range headers {
+		headerColors[i] = tablewriter.Colors{tablewriter.Bold}
+	}
+	table.SetHeader(headers)
+	table.SetHeaderColor(headerColors...)
 
 	// Populate data
 	// Status formatting
@@ -61,13 +59,31 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 
 	// Calculate time ago
 	// Show relative time by default
-	since := time.Since(task.CreatedAt).Round(time.Second).String() + " ago"
+	created := time.Since(task.CreatedAt).Round(time.Second).String() + " ago"
 	// If duration is at least a week, show the exact date
 	if time.Since(task.CreatedAt).Hours() >= 168 {
-		since = task.CreatedAt.Format("02/01/2006")
+		created = task.CreatedAt.Format("2006-01-02")
 	}
 
-	table.Append([]string{strconv.Itoa(task.ID), task.Title, status, priority, since, notes})
+	// Calculate due
+	due := ""
+	if !task.Due.IsZero() {
+		duration := time.Until(task.Due).Round(time.Second)
+
+		if duration.Milliseconds() > 0 {
+			// Before due
+			due = "in " + duration.String()
+
+			if time.Until(task.Due).Hours() > 24 {
+				due = task.Due.Format("2006-01-02 15:04")
+			}
+		} else {
+			// Over due
+			due = color.RedString("over " + duration.String()[1:])
+		}
+	}
+
+	table.Append([]string{strconv.Itoa(task.ID), task.Title, status, priority, created, due, notes})
 
 	fmt.Fprintln(p.Stdout)
 	table.Render()
@@ -84,16 +100,14 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 	table.SetCaption(true, caption)
 
 	// Generate headers
+	headers := []string{"ID", "Title", "Status", "Priority", "Created", "Due", "Notes"}
+	headerColors := make([]tablewriter.Colors, len(headers))
+	for i := range headers {
+		headerColors[i] = tablewriter.Colors{tablewriter.Bold}
+	}
 	table.SetAutoFormatHeaders(false)
-	table.SetHeader([]string{"ID", "Title", "Status", "Priority", "Created", "Notes"})
-	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-	)
+	table.SetHeader(headers)
+	table.SetHeaderColor(headerColors...)
 
 	// Populate data
 	for _, t := range tasks {
@@ -112,13 +126,31 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 
 		// Calculate time ago
 		// Show relative time by default
-		since := time.Since(t.CreatedAt).Round(time.Second).String() + " ago"
+		created := time.Since(t.CreatedAt).Round(time.Second).String() + " ago"
 		// If duration is at least a week, show the exact date
 		if time.Since(t.CreatedAt).Hours() >= 168 {
-			since = t.CreatedAt.Format("02/01/2006")
+			created = t.CreatedAt.Format("2006-01-02")
 		}
 
-		table.Append([]string{strconv.Itoa(t.ID), t.Title, status, priority, since, notes})
+		// Calculate due
+		due := ""
+		if !t.Due.IsZero() {
+			duration := time.Until(t.Due).Round(time.Second)
+
+			if duration.Milliseconds() > 0 {
+				// Before due
+				due = "in " + duration.String()
+
+				if time.Until(t.Due).Hours() > 24 {
+					due = t.Due.Format("2006-01-02 15:04")
+				}
+			} else {
+				// Over due
+				due = color.RedString("over " + duration.String()[1:])
+			}
+		}
+
+		table.Append([]string{strconv.Itoa(t.ID), t.Title, status, priority, created, due, notes})
 	}
 
 	fmt.Fprintln(p.Stdout)

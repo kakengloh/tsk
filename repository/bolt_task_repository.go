@@ -25,7 +25,7 @@ func NewBoltTaskRepository(db *bbolt.DB) (*BoltTaskRepository, error) {
 	return &BoltTaskRepository{db}, err
 }
 
-func (tr *BoltTaskRepository) CreateTask(title string, priority entity.TaskPriority, status entity.TaskStatus, note string) (entity.Task, error) {
+func (tr *BoltTaskRepository) CreateTask(title string, priority entity.TaskPriority, status entity.TaskStatus, due time.Time, note string) (entity.Task, error) {
 	notes := []string{}
 	if note != "" {
 		notes = append(notes, note)
@@ -43,6 +43,7 @@ func (tr *BoltTaskRepository) CreateTask(title string, priority entity.TaskPrior
 			Title:     title,
 			Priority:  priority,
 			Status:    status,
+			Due:       due,
 			Notes:     notes,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
@@ -130,7 +131,7 @@ func (tr *BoltTaskRepository) GetTaskByID(id int) (entity.Task, error) {
 	return t, err
 }
 
-func (tr *BoltTaskRepository) UpdateTask(id int, title string, priority entity.TaskPriority, status entity.TaskStatus) (entity.Task, error) {
+func (tr *BoltTaskRepository) UpdateTask(id int, title string, priority entity.TaskPriority, status entity.TaskStatus, due time.Time) (entity.Task, error) {
 	var t entity.Task
 
 	err := tr.DB.Update(func(tx *bbolt.Tx) error {
@@ -152,6 +153,10 @@ func (tr *BoltTaskRepository) UpdateTask(id int, title string, priority entity.T
 
 		t.Priority = priority
 		t.Status = status
+
+		if !due.IsZero() {
+			t.Due = due
+		}
 
 		buf, err := json.Marshal(t)
 		if err != nil {

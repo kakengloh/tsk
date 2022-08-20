@@ -9,6 +9,7 @@ type Task struct {
 	Title     string
 	Priority  TaskPriority
 	Status    TaskStatus
+	Due       time.Time
 	Notes     []string
 	CreatedAt time.Time
 	UpdatedAt time.Time

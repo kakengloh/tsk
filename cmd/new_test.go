@@ -3,6 +3,7 @@ package cmd_test
 import (
 	"bytes"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/kakengloh/tsk/cmd"
@@ -22,7 +23,7 @@ func Test_NewCommand(t *testing.T) {
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().CreateTask(task.Title, task.Priority, task.Status, "").Return(task, nil)
+	tr.EXPECT().CreateTask(task.Title, task.Priority, task.Status, gomock.Any(), "").Return(task, nil)
 
 	buf := new(bytes.Buffer)
 
@@ -41,18 +42,20 @@ func Test_NewCommand(t *testing.T) {
 }
 
 func Test_NewCommandWithOptions(t *testing.T) {
+	due, _ := time.ParseInLocation("2006-01-02 15:04", "2023-01-01 12:00", time.Local)
 	task := entity.Task{
 		Title:    "make coffee",
 		Priority: entity.TaskPriorityMedium,
 		Status:   entity.TaskStatusDoing,
 		Notes:    []string{"long black"},
+		Due:      due,
 	}
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().CreateTask(task.Title, task.Priority, task.Status, task.Notes[0]).Return(task, nil)
+	tr.EXPECT().CreateTask(task.Title, task.Priority, task.Status, due, task.Notes[0]).Return(task, nil)
 
 	buf := new(bytes.Buffer)
 
@@ -64,6 +67,7 @@ func Test_NewCommandWithOptions(t *testing.T) {
 		"-p=medium",
 		"-s=doing",
 		"-n=long black",
+		"-d=2023-01-01 12:00",
 	})
 
 	err := newCmd.Execute()
@@ -73,4 +77,5 @@ func Test_NewCommandWithOptions(t *testing.T) {
 	assert.Contains(t, buf.String(), "make coffee")
 	assert.Contains(t, buf.String(), "Medium")
 	assert.Contains(t, buf.String(), "Doing")
+	assert.Contains(t, buf.String(), "2023-01-01 12:00")
 }

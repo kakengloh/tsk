@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
@@ -46,8 +47,27 @@ func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
 				return err
 			}
 
+			// Due
+			d, err := cmd.Flags().GetString("due")
+			if err != nil {
+				return err
+			}
+			var due time.Time
+			if d != "" {
+				duration, err := time.ParseDuration(d)
+				if err == nil {
+					due = time.Now().Add(duration)
+				} else {
+					val, err := time.ParseInLocation("2006-01-02 15:04", d, time.Local)
+					if err != nil {
+						return err
+					}
+					due = val
+				}
+			}
+
 			// Create task
-			t, err := tr.CreateTask(title, priority, status, n)
+			t, err := tr.CreateTask(title, priority, status, due, n)
 
 			if err != nil {
 				return fmt.Errorf("failed to create task: %w", err)
@@ -62,6 +82,7 @@ func NewNewCommand(tr repository.TaskRepository) *cobra.Command {
 	newCmd.PersistentFlags().StringP("priority", "p", entity.TaskPriorityLow.String(), "Priority")
 	newCmd.PersistentFlags().StringP("status", "s", entity.TaskStatusTodo.String(), "Status")
 	newCmd.PersistentFlags().StringP("note", "n", "", "Note")
+	newCmd.PersistentFlags().StringP("due", "d", "", "Due")
 
 	return newCmd
 }
