@@ -1,6 +1,7 @@
 package printer
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"strconv"
@@ -16,6 +17,13 @@ import (
 type Printer struct {
 	Stdout io.Writer
 }
+
+type OutputFormat string
+
+const (
+	OutputFormatTable = "table"
+	OutputFormatJSON  = "json"
+)
 
 func New(out io.Writer) *Printer {
 	return &Printer{
@@ -156,6 +164,15 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 	fmt.Fprintln(p.Stdout)
 	table.Render()
 	fmt.Fprintln(p.Stdout)
+}
+
+func (p *Printer) PrintTaskListJSON(tasks []entity.Task) {
+	b, err := json.MarshalIndent(tasks, "", "  ")
+	if err != nil {
+		fmt.Println("JSON marshal error")
+		return
+	}
+	fmt.Fprintln(p.Stdout, string(b))
 }
 
 func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {

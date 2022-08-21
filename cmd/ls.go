@@ -51,6 +51,12 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 				keyword = args[0]
 			}
 
+			// Output format
+			format, err := cmd.Flags().GetString("format")
+			if err != nil {
+				return err
+			}
+
 			tasks, err := tr.ListTasks(status, priority, keyword)
 
 			if err != nil {
@@ -62,7 +68,14 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 				return nil
 			}
 
-			pt.PrintTaskList(tasks)
+			switch format {
+			case printer.OutputFormatJSON:
+				pt.PrintTaskListJSON(tasks)
+			case printer.OutputFormatTable:
+				pt.PrintTaskList(tasks)
+			default:
+				return fmt.Errorf("invalid output format: %s, valid values are [table, json]", format)
+			}
 
 			return nil
 		},
@@ -70,6 +83,7 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 
 	lsCmd.PersistentFlags().StringP("status", "s", "", "Filter by status (todo / doing / done)")
 	lsCmd.PersistentFlags().StringP("priority", "p", "", "Filter by priority (low / medium / high)")
+	lsCmd.PersistentFlags().StringP("format", "f", printer.OutputFormatTable, "Output format (table / json)")
 
 	return lsCmd
 }
