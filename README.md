@@ -53,10 +53,10 @@ tsk new 'make coffee'
 ```
 <img width="479" alt="tsk new output" src="https://user-images.githubusercontent.com/40446720/185779302-427fce50-f7b2-42fe-8018-707937bfcfc6.png">
 
-### Create a new task with status and priority
+### Create a new task with status, priority and due
 
 ```bash
-tsk new 'feed my cat' -s doing -p high
+tsk new 'feed my cat' -s doing -p high -d 1h
 ```
 <img width="523" alt="tsk new with options output" src="https://user-images.githubusercontent.com/40446720/185779314-05cd0a17-5a28-4cac-aa84-73754643e4af.png">
 
@@ -86,7 +86,7 @@ tsk ls cat
 ```bash
 tsk ls -f json
 ```
-<img width="388" alt="tsk ls json format output" src="https://user-images.githubusercontent.com/40446720/185779420-5b4574ee-7874-4b68-b525-4cecde7d4c4a.png">
+<img width="262" alt="tsk ls json format output" src="https://user-images.githubusercontent.com/40446720/185779832-0495fab5-1c91-4d75-ad1a-f1dc1ac1e6a0.png">
 
 ### View tasks in a Kanban board
 
