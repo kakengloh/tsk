@@ -167,7 +167,27 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 }
 
 func (p *Printer) PrintTaskListJSON(tasks []entity.Task) {
-	b, err := json.MarshalIndent(tasks, "", "  ")
+	results := make([]map[string]interface{}, len(tasks))
+
+	for i, t := range tasks {
+		// Format due
+		due := ""
+		if !t.Due.IsZero() {
+			due = t.Due.Format("2006-01-02 15:04")
+		}
+
+		results[i] = map[string]interface{}{
+			"id":       t.ID,
+			"title":    t.Title,
+			"priority": t.Priority.String(),
+			"status":   t.Status.String(),
+			"due":      due,
+			"notes":    t.Notes,
+			"created":  t.CreatedAt.Format("2006-01-02 15:04"),
+		}
+	}
+
+	b, err := json.MarshalIndent(results, "", "  ")
 	if err != nil {
 		fmt.Println("JSON marshal error")
 		return
