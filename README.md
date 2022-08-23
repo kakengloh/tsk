@@ -67,10 +67,10 @@ tsk ls
 ```
 <img width="529" alt="tsk ls output" src="https://user-images.githubusercontent.com/40446720/185779321-cb894804-ab7f-4448-9671-2465d1c5652a.png">
 
-### List tasks with filters
+### List tasks with filters (status, priority, due)
 
 ```bash
-tsk ls -s doing -p high
+tsk ls -s doing -p high -d 1h
 ```
 <img width="533" alt="tsk ls with filters output" src="https://user-images.githubusercontent.com/40446720/185779328-8fc15724-5fd6-426b-81a0-536ec05bbf6a.png">
 
