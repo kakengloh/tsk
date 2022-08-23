@@ -87,7 +87,7 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 			}
 		} else {
 			// Over due
-			due = color.RedString("over " + duration.String()[1:])
+			due = color.HiRedString("over " + duration.String()[1:])
 		}
 	}
 
@@ -154,7 +154,7 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 				}
 			} else {
 				// Over due
-				due = color.RedString("over " + duration.String()[1:])
+				due = color.HiRedString("over " + duration.String()[1:])
 			}
 		}
 
@@ -208,8 +208,8 @@ func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
 	})
 	table.SetHeaderColor(
 		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlueColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.FgYellowColor},
-		tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiYellowColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiGreenColor},
 	)
 
 	lists := []entity.TaskList{todo, doing, done}
@@ -231,8 +231,8 @@ func (p *Printer) PrintTaskBoard(todo, doing, done entity.TaskList) {
 	// Print summary
 	summary := ""
 	summary += color.HiBlueString(fmt.Sprintf("%d todo / ", len(todo)))
-	summary += color.YellowString(fmt.Sprintf("%d doing / ", len(doing)))
-	summary += color.GreenString(fmt.Sprintf("%d done", len(done)))
+	summary += color.HiYellowString(fmt.Sprintf("%d doing / ", len(doing)))
+	summary += color.HiGreenString(fmt.Sprintf("%d done", len(done)))
 	fmt.Fprintln(p.Stdout, summary)
 	fmt.Fprintln(p.Stdout)
 }
@@ -248,9 +248,9 @@ func ColoredStatus(status entity.TaskStatus) string {
 	case entity.TaskStatusTodo:
 		s = color.HiBlueString(s)
 	case entity.TaskStatusDoing:
-		s = color.YellowString(s)
+		s = color.HiYellowString(s)
 	case entity.TaskStatusDone:
-		s = color.GreenString(s)
+		s = color.HiGreenString(s)
 	}
 
 	return s
@@ -263,9 +263,9 @@ func ColoredPriority(status entity.TaskPriority) string {
 	case entity.TaskPriorityLow:
 		s = color.HiBlueString(s)
 	case entity.TaskPriorityMedium:
-		s = color.YellowString(s)
+		s = color.HiYellowString(s)
 	case entity.TaskPriorityHigh:
-		s = color.RedString(s)
+		s = color.HiRedString(s)
 	}
 
 	return s
