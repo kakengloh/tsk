@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/repository"
@@ -51,20 +52,33 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 				keyword = args[0]
 			}
 
+			// Due filter
+			due, err := cmd.Flags().GetDuration("due")
+			if err != nil {
+				return nil
+			}
+
+			fmt.Println("due", due)
+
 			// Output format
 			format, err := cmd.Flags().GetString("format")
 			if err != nil {
 				return err
 			}
 
-			tasks, err := tr.ListTasks(status, priority, keyword)
+			tasks, err := tr.ListTasksWithFilters(entity.TaskFilters{
+				Status:   status,
+				Priority: priority,
+				Keyword:  keyword,
+				Due:      due,
+			})
 
 			if err != nil {
 				return fmt.Errorf("failed to list tasks: %w", err)
 			}
 
 			if len(tasks) == 0 {
-				cmd.Println("You don't have any task yet, use the `tsk new` command to create your first task!")
+				cmd.Println("No results found, try adjusting your filters to find what you're looking for!")
 				return nil
 			}
 
@@ -83,6 +97,7 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 
 	lsCmd.PersistentFlags().StringP("status", "s", "", "Filter by status (todo / doing / done)")
 	lsCmd.PersistentFlags().StringP("priority", "p", "", "Filter by priority (low / medium / high)")
+	lsCmd.PersistentFlags().DurationP("due", "d", time.Duration(0), "Filter by due (eg: 30m / 1h / 2d)")
 	lsCmd.PersistentFlags().StringP("format", "f", printer.OutputFormatTable, "Output format (table / json)")
 
 	return lsCmd

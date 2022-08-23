@@ -25,7 +25,7 @@ func Test_LsCommand(t *testing.T) {
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().ListTasks(gomock.Any(), gomock.Any(), gomock.Any()).Return(tasks, nil)
+	tr.EXPECT().ListTasksWithFilters(gomock.Any()).Return(tasks, nil)
 
 	buf := new(bytes.Buffer)
 
@@ -47,7 +47,7 @@ func Test_LsCommandWithoutTask(t *testing.T) {
 	defer ctrl.Finish()
 
 	m := mock.NewMockTaskRepository(ctrl)
-	m.EXPECT().ListTasks(gomock.Any(), gomock.Any(), gomock.Any()).Return(make(entity.TaskList, 0), nil)
+	m.EXPECT().ListTasksWithFilters(gomock.Any()).Return(make(entity.TaskList, 0), nil)
 
 	buf := new(bytes.Buffer)
 
@@ -58,7 +58,7 @@ func Test_LsCommandWithoutTask(t *testing.T) {
 	err := lsCmd.Execute()
 	assert.NoError(t, err)
 
-	expected := "You don't have any task yet, use the `tsk new` command to create your first task!\n"
+	expected := "No results found, try adjusting your filters to find what you're looking for!\n"
 	assert.Equal(t, expected, buf.String())
 }
 
@@ -74,7 +74,7 @@ func Test_LsCommandWithKeyword(t *testing.T) {
 	defer ctrl.Finish()
 
 	tr := mock.NewMockTaskRepository(ctrl)
-	tr.EXPECT().ListTasks(gomock.Any(), gomock.Any(), "coffee").Return(tasks, nil)
+	tr.EXPECT().ListTasksWithFilters(gomock.Any()).Return(tasks, nil)
 
 	buf := new(bytes.Buffer)
 

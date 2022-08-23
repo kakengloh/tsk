@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -66,12 +67,59 @@ func (tr *BoltTaskRepository) CreateTask(title string, priority entity.TaskPrior
 	return t, nil
 }
 
-func (tr *BoltTaskRepository) ListTasks(
-	status entity.TaskStatus,
-	priority entity.TaskPriority,
-	keyword string,
-) (entity.TaskList, error) {
-	tasks := entity.TaskList{}
+func (tr *BoltTaskRepository) ListTasks(ids ...int) (entity.TaskList, error) {
+	var tasks entity.TaskList
+
+	err := tr.DB.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("Task"))
+		c := b.Cursor()
+
+		var err error
+
+		if len(ids) == 0 {
+			// Retrieve all tasks
+			err = b.ForEach(func(k, v []byte) error {
+				var t entity.Task
+
+				err = json.Unmarshal(v, &t)
+				if err != nil {
+					return err
+				}
+
+				tasks = append(tasks, t)
+				return nil
+			})
+		} else {
+			// Retrieve tasks with given IDs only
+			containsID := func(ids []int, k []byte) bool {
+				for _, id := range ids {
+					if bytes.Equal(k, util.Itob(id)) {
+						return true
+					}
+				}
+				return false
+			}
+
+			for k, v := c.First(); k != nil && containsID(ids, k); k, v = c.Next() {
+				var t entity.Task
+
+				err = json.Unmarshal(v, &t)
+				if err != nil {
+					break
+				}
+
+				tasks = append(tasks, t)
+			}
+		}
+
+		return err
+	})
+
+	return tasks, err
+}
+
+func (tr *BoltTaskRepository) ListTasksWithFilters(filters entity.TaskFilters) (entity.TaskList, error) {
+	var tasks entity.TaskList
 
 	err := tr.DB.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("Task"))
@@ -84,22 +132,32 @@ func (tr *BoltTaskRepository) ListTasks(
 			}
 
 			// Filter by status
-			if status != entity.TaskStatusNone {
-				if status != t.Status {
+			if filters.Status != entity.TaskStatusNone {
+				if filters.Status != t.Status {
 					return nil
 				}
 			}
 
 			// Filter by priority
-			if priority != entity.TaskPriorityNone {
-				if priority != t.Priority {
+			if filters.Priority != entity.TaskPriorityNone {
+				if filters.Priority != t.Priority {
 					return nil
 				}
 			}
 
 			// Filter by keyword
-			if keyword != "" {
-				if !strings.Contains(strings.ToLower(t.Title), strings.ToLower(keyword)) {
+			if filters.Keyword != "" {
+				if !strings.Contains(strings.ToLower(t.Title), strings.ToLower(filters.Keyword)) {
+					return nil
+				}
+			}
+
+			// Filter by due
+			if filters.Due.Seconds() > 0 {
+				if t.Due.Second() == 0 {
+					return nil
+				}
+				if time.Until(t.Due) >= filters.Due {
 					return nil
 				}
 			}
@@ -131,7 +189,7 @@ func (tr *BoltTaskRepository) GetTaskByID(id int) (entity.Task, error) {
 	return t, err
 }
 
-func (tr *BoltTaskRepository) UpdateTask(id int, title string, priority entity.TaskPriority, status entity.TaskStatus, due time.Time) (entity.Task, error) {
+func (tr *BoltTaskRepository) UpdateTask(id int, data entity.Task) (entity.Task, error) {
 	var t entity.Task
 
 	err := tr.DB.Update(func(tx *bbolt.Tx) error {
@@ -147,15 +205,15 @@ func (tr *BoltTaskRepository) UpdateTask(id int, title string, priority entity.T
 			return err
 		}
 
-		if title != "" {
-			t.Title = title
+		if data.Title != "" {
+			t.Title = data.Title
 		}
 
-		t.Priority = priority
-		t.Status = status
+		t.Priority = data.Priority
+		t.Status = data.Status
 
-		if !due.IsZero() {
-			t.Due = due
+		if !data.Due.IsZero() {
+			t.Due = data.Due
 		}
 
 		buf, err := json.Marshal(t)
@@ -237,22 +295,9 @@ func (tr *BoltTaskRepository) UpdateTaskStatus(status entity.TaskStatus, ids ...
 	return res
 }
 
-func (tr *BoltTaskRepository) DeleteTask(id int) error {
-	err := tr.DB.Update(func(tx *bbolt.Tx) error {
-		b := tx.Bucket([]byte("Task"))
-		return b.Delete(util.Itob(id))
-	})
-	return err
-}
-
-func (tr *BoltTaskRepository) BulkDeleteTasks(ids ...int) map[int]error {
-	type result struct {
-		ID  int
-		Err error
-	}
-
+func (tr *BoltTaskRepository) DeleteTask(ids ...int) error {
 	wg := &sync.WaitGroup{}
-	ch := make(chan result, len(ids))
+	ch := make(chan error, len(ids))
 
 	for _, id := range ids {
 		wg.Add(1)
@@ -264,19 +309,24 @@ func (tr *BoltTaskRepository) BulkDeleteTasks(ids ...int) map[int]error {
 				return b.Delete(util.Itob(id))
 			})
 
-			ch <- result{id, err}
+			ch <- err
 		}(id)
 	}
 
 	wg.Wait()
 	close(ch)
 
-	res := make(map[int]error)
+	var errMessages []string
 	for msg := range ch {
-		res[msg.ID] = msg.Err
+		errMessages = append(errMessages, msg.Error())
 	}
 
-	return res
+	var err error
+	if len(errMessages) > 0 {
+		err = fmt.Errorf(strings.Join(errMessages, "\n"))
+	}
+
+	return err
 }
 
 func (tr *BoltTaskRepository) AddNotes(id int, notes ...string) (entity.Task, error) {

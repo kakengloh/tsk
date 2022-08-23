@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/kakengloh/tsk/repository"
 	"github.com/spf13/cobra"
@@ -25,22 +24,12 @@ func NewRmCommand(tr repository.TaskRepository) *cobra.Command {
 				ids = append(ids, id)
 			}
 
-			res := tr.BulkDeleteTasks(ids...)
-
-			var err error
-
-			success := []string{}
-
-			for _, id := range ids {
-				err = res[id]
-				if err == nil {
-					success = append(success, strconv.Itoa(id))
-				} else {
-					fmt.Printf("Failed to delete task \"%d\": %s\n", id, err)
-				}
+			err := tr.DeleteTask(ids...)
+			if err != nil {
+				return fmt.Errorf("failed to delete tasks: %w", err)
 			}
 
-			fmt.Printf("\nTask(s) [%s] deleted ❌\n", strings.Join(success, ", "))
+			fmt.Printf("\nTask(s) deleted ✅\n")
 
 			return err
 		},

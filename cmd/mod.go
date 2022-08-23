@@ -87,7 +87,12 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 				}
 			}
 
-			task, err = tr.UpdateTask(id, title, priority, status, due)
+			task, err = tr.UpdateTask(id, entity.Task{
+				Title:    title,
+				Priority: priority,
+				Status:   status,
+				Due:      due,
+			})
 
 			pt.PrintTask(task, "Task modified ✅")
 

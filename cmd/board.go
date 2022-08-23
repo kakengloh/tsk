@@ -16,7 +16,7 @@ func NewBoardCommand(tr repository.TaskRepository) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			pt := printer.New(cmd.OutOrStdout())
 
-			tasks, err := tr.ListTasks(entity.TaskStatusNone, entity.TaskPriorityNone, "")
+			tasks, err := tr.ListTasks()
 
 			if err != nil {
 				return fmt.Errorf("failed to list tasks: %w", err)

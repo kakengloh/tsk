@@ -69,9 +69,16 @@ func (s TaskStatus) String() string {
 	return TaskStatusToString[s]
 }
 
+type TaskFilters struct {
+	Status   TaskStatus
+	Priority TaskPriority
+	Due      time.Duration
+	Keyword  string
+}
+
 type TaskList []Task
 
-func (tl TaskList) FilterByStatus(status TaskStatus) []Task {
+func (tl TaskList) FilterByStatus(status TaskStatus) TaskList {
 	tasks := []Task{}
 
 	for _, t := range tl {
@@ -83,7 +90,7 @@ func (tl TaskList) FilterByStatus(status TaskStatus) []Task {
 	return tasks
 }
 
-func (tl TaskList) FilterByPriority(priority TaskPriority) []Task {
+func (tl TaskList) FilterByPriority(priority TaskPriority) TaskList {
 	tasks := []Task{}
 
 	for _, t := range tl {
