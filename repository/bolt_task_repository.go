@@ -318,7 +318,9 @@ func (tr *BoltTaskRepository) DeleteTask(ids ...int) error {
 
 	var errMessages []string
 	for msg := range ch {
-		errMessages = append(errMessages, msg.Error())
+		if msg != nil {
+			errMessages = append(errMessages, msg.Error())
+		}
 	}
 
 	var err error
