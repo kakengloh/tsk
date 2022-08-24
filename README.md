@@ -133,11 +133,8 @@ tsk note 2 'it still hungry' 'meow...'
 ### Remove task(s)
 
 ```bash
-tsk rm <id> <id2> ...
-tsk rm 1 2 # example
+tsk rm 1
 ```
-
-<img width="195" alt="tsk rm output" src="https://user-images.githubusercontent.com/40446720/185359793-faa50ea3-9466-4b95-9dc7-b8ecdea0782d.png">
 
 ### Clean your data
 
@@ -146,7 +143,12 @@ tsk clean
 ```
 
 ## Todo
-- [ ] Task deadline and reminder (via desktop notification)
+- [x] Task due
+- [ ] Due reminder (via desktop notification)
 
 ## Contributing
 We welcome all feature requests and pull requests! 🙋
+
+---
+
+<a href="https://www.buymeacoffee.com/kakengloh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
