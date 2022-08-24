@@ -58,8 +58,6 @@ func NewLsCommand(tr repository.TaskRepository) *cobra.Command {
 				return nil
 			}
 
-			fmt.Println("due", due)
-
 			// Output format
 			format, err := cmd.Flags().GetString("format")
 			if err != nil {
