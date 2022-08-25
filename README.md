@@ -51,84 +51,84 @@ See [releases](https://github.com/kakengloh/tsk/releases) for executables
 ```bash
 tsk new 'make coffee'
 ```
-<img width="479" alt="tsk new output" src="https://user-images.githubusercontent.com/40446720/185779302-427fce50-f7b2-42fe-8018-707937bfcfc6.png">
+<img width="600" alt="tsk new output" src="https://user-images.githubusercontent.com/40446720/186668426-a5908430-c1db-4529-9206-6033571cff85.png">
 
 ### Create a new task with status, priority and due
 
 ```bash
 tsk new 'feed my cat' -s doing -p high -d 1h
 ```
-<img width="523" alt="tsk new with options output" src="https://user-images.githubusercontent.com/40446720/185779314-05cd0a17-5a28-4cac-aa84-73754643e4af.png">
+<img width="600" alt="tsk new with options output" src="https://user-images.githubusercontent.com/40446720/186668696-6ba2e1b3-d2d2-4db9-953b-ac706876f365.png">
 
 ### List tasks
 
 ```bash
 tsk ls
 ```
-<img width="529" alt="tsk ls output" src="https://user-images.githubusercontent.com/40446720/185779321-cb894804-ab7f-4448-9671-2465d1c5652a.png">
+<img width="600" alt="tsk ls output" src="https://user-images.githubusercontent.com/40446720/186668844-d73e83dd-e334-403c-b59e-e8410984c994.png">
 
 ### List tasks with filters (status, priority, due)
 
 ```bash
 tsk ls -s doing -p high -d 1h
 ```
-<img width="533" alt="tsk ls with filters output" src="https://user-images.githubusercontent.com/40446720/185779328-8fc15724-5fd6-426b-81a0-536ec05bbf6a.png">
+<img width="600" alt="tsk ls with filters output" src="https://user-images.githubusercontent.com/40446720/186668966-12b472d3-b38e-449c-b1ad-eec70c86ac42.png">
 
 ### List tasks with a keyword
 
 ```bash
 tsk ls cat
 ```
-<img width="527" alt="tsk ls with keyword output" src="https://user-images.githubusercontent.com/40446720/185779335-be1bf537-9b35-4021-9482-2f5cfbfbfabd.png">
+<img width="600" alt="tsk ls with keyword output" src="https://user-images.githubusercontent.com/40446720/186669061-d20d7a1a-7c75-4225-a0e3-f450dbb193af.png">
 
 ### List tasks as JSON
 
 ```bash
 tsk ls -f json
 ```
-<img width="262" alt="tsk ls json format output" src="https://user-images.githubusercontent.com/40446720/185779832-0495fab5-1c91-4d75-ad1a-f1dc1ac1e6a0.png">
+<img width="250" alt="tsk ls json format output" src="https://user-images.githubusercontent.com/40446720/186669184-f25cb05d-6625-41db-ac87-3e12b2c03ae0.png">
 
 ### View tasks in a Kanban board
 
 ```bash
 tsk board
 ```
-<img width="311" alt="tsk board output" src="https://user-images.githubusercontent.com/40446720/185562238-6d245e95-303d-4f66-9c51-cc961ba55ddd.png">
+<img width="400" alt="tsk board output" src="https://user-images.githubusercontent.com/40446720/186669288-670f387c-0da8-42cd-a348-502c50853d4c.png">
 
 ### Mark task(s) as todo
 
 ```bash
 tsk todo 2
 ```
-<img width="208" alt="tsk todo output" src="https://user-images.githubusercontent.com/40446720/185358924-89528adf-81f5-434e-8658-41117d8507e6.png">
+<img width="250" alt="tsk todo output" src="https://user-images.githubusercontent.com/40446720/186669381-e5bde5b1-84bd-4cf8-9721-564739930b1e.png">
 
 ### Mark task(s) as doing
 
 ```bash
 tsk doing 2
 ```
-<img width="204" alt="tsk doing output" src="https://user-images.githubusercontent.com/40446720/185359025-55f5d4b1-09c1-48f8-9424-9fea5cabc638.png">
+<img width="250" alt="tsk doing output" src="https://user-images.githubusercontent.com/40446720/186669448-5eedb3d0-af4b-4074-a42a-d9daf387571c.png">
 
 ### Mark task(s) as done
 
 ```bash
 tsk done 2
 ```
-<img width="206" alt="tsk done output" src="https://user-images.githubusercontent.com/40446720/185359098-3d385a9c-0043-493c-8c13-a83e7753df69.png">
+<img width="250" alt="tsk done output" src="https://user-images.githubusercontent.com/40446720/186669471-7ab542ad-ce34-495d-b5cc-8aeb36d086d9.png">
 
 ### Modify an existing task
 
 ```bash
 tsk mod 2 -s todo -p low
 ```
-<img width="532" alt="tsk mod output" src="https://user-images.githubusercontent.com/40446720/185779357-c74fa73a-0f72-457b-8b96-3c2218a40f9a.png">
+<img width="600" alt="tsk mod output" src="https://user-images.githubusercontent.com/40446720/186669548-1be2b856-5f2a-4e34-8788-bbfdf15f58a9.png">
 
 ### Add note(s) on a task
 
 ```bash
 tsk note 2 'it still hungry' 'meow...'
 ```
-<img width="624" alt="tsk note output" src="https://user-images.githubusercontent.com/40446720/185779360-49eb2425-6491-48e4-b556-e92cd7a43aa1.png">
+<img width="600" alt="tsk note output" src="https://user-images.githubusercontent.com/40446720/186669611-8a7c67aa-ac04-479d-b1c3-46fd2829d24c.png">
 
 ### Remove task(s)
 
