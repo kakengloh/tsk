@@ -26,6 +26,8 @@ Personal task management should be as simple as possible, let's build a snappy c
 - Works without internet connection ✅
 - Data stored locally - powered by [BoltDB](https://github.com/etcd-io/bbolt) ✅
 
+See [todo](#todo)
+
 ## Installation
 
 ### Go
@@ -40,9 +42,15 @@ GO111MODULE=on go get github.com/kakengloh/tsk
 
 > Ensure that `$GOPATH/bin` is in your `PATH`
 
+### Shell completion
+
+Shell completion is supported on `bash`, `zsh`, `fish`, `powershell`
+
+To enable it, run `tsk completion {YOUR_SHELL} -h` and follow the steps
+
 ### Executables
 
-See [releases](https://github.com/kakengloh/tsk/releases) for executables
+See [releases](https://github.com/kakengloh/tsk/releases)
 
 ## Example
 
