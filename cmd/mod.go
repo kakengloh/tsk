@@ -24,13 +24,8 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 				return fmt.Errorf("task ID must be an integer: %w", err)
 			}
 
-			task, err := tr.GetTaskByID(id)
-			if err != nil {
-				return fmt.Errorf("task not found")
-			}
-
 			// Title
-			title := task.Title
+			var title string
 			t, err := cmd.Flags().GetString("title")
 			if err != nil {
 				return err
@@ -40,7 +35,7 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 			}
 
 			// Priority
-			priority := task.Priority
+			var priority entity.TaskPriority
 			p, err := cmd.Flags().GetString("priority")
 			if err != nil {
 				return err
@@ -54,7 +49,7 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 			}
 
 			// Status
-			status := task.Status
+			var status entity.TaskStatus
 			s, err := cmd.Flags().GetString("status")
 			if err != nil {
 				return err
@@ -75,7 +70,6 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 			var due time.Time
 			if d != "" {
 				duration, err := time.ParseDuration(d)
-				fmt.Println(err)
 				if err == nil {
 					due = time.Now().Add(duration)
 				} else {
@@ -87,16 +81,25 @@ func NewModCommand(tr repository.TaskRepository) *cobra.Command {
 				}
 			}
 
-			task, err = tr.UpdateTask(id, entity.Task{
+			task, err := tr.UpdateTask(id, entity.Task{
 				Title:    title,
 				Priority: priority,
 				Status:   status,
 				Due:      due,
 			})
 
+			if err != nil {
+				if err == repository.ErrTaskNotFound {
+					fmt.Println("Task not found")
+					return nil
+				}
+
+				return err
+			}
+
 			pt.PrintTask(task, "Task modified ✅")
 
-			return err
+			return nil
 		},
 	}
 

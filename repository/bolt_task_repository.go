@@ -180,7 +180,7 @@ func (tr *BoltTaskRepository) GetTaskByID(id int) (entity.Task, error) {
 		b := tx.Bucket([]byte("Task"))
 		v := b.Get(util.Itob(id))
 		if v == nil {
-			return fmt.Errorf("task not found")
+			return ErrTaskNotFound
 		}
 
 		return json.Unmarshal(v, &t)
@@ -197,7 +197,7 @@ func (tr *BoltTaskRepository) UpdateTask(id int, data entity.Task) (entity.Task,
 
 		v := b.Get(util.Itob(id))
 		if v == nil {
-			return fmt.Errorf("task not found")
+			return ErrTaskNotFound
 		}
 
 		err := json.Unmarshal(v, &t)
@@ -209,8 +209,13 @@ func (tr *BoltTaskRepository) UpdateTask(id int, data entity.Task) (entity.Task,
 			t.Title = data.Title
 		}
 
-		t.Priority = data.Priority
-		t.Status = data.Status
+		if data.Priority != entity.TaskPriorityNone {
+			t.Priority = data.Priority
+		}
+
+		if data.Status != entity.TaskStatusNone {
+			t.Status = data.Status
+		}
 
 		if !data.Due.IsZero() {
 			t.Due = data.Due

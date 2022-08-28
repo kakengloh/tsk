@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"time"
 
 	"github.com/kakengloh/tsk/entity"
@@ -23,3 +24,5 @@ type UpdateTaskStatusResult struct {
 	FromStatus entity.TaskStatus
 	ToStatus   entity.TaskStatus
 }
+
+var ErrTaskNotFound = errors.New("task not found")
