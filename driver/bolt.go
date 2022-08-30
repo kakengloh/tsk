@@ -11,18 +11,33 @@ import (
 
 var db *bbolt.DB
 
+func GetDataDir() (string, error) {
+	dataroot := os.Getenv("XDG_DATA_HOME")
+
+	if dataroot == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("$HOME directory not found: %w", err)
+		}
+		dataroot = filepath.Join(home, ".local", "share")
+	}
+
+	datadir := filepath.Join(dataroot, "tsk")
+	err := os.MkdirAll(datadir, os.ModePerm)
+	if err != nil {
+		return "", fmt.Errorf("failed to create tsk under %s directory: %w", dataroot, err)
+	}
+
+	return datadir, nil
+}
+
 func NewBolt() (*bbolt.DB, error) {
-	home, err := os.UserHomeDir()
+	datadir, err := GetDataDir()
 	if err != nil {
-		return nil, fmt.Errorf("$HOME directory not found: %w", err)
+		return nil, err
 	}
 
-	err = os.MkdirAll(filepath.Join(home, ".tsk"), os.ModePerm)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create .tsk under $HOME directory: %w", err)
-	}
-
-	path := filepath.Join(home, ".tsk", "bolt.db")
+	path := filepath.Join(datadir, "bolt.db")
 
 	_, err = os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -44,10 +59,10 @@ func CloseBolt() {
 }
 
 func RemoveBolt() error {
-	home, err := os.UserHomeDir()
+	datadir, err := GetDataDir()
 	if err != nil {
-		return fmt.Errorf("$HOME directory not found: %w", err)
+		return err
 	}
 
-	return os.Remove(filepath.Join(home, ".tsk", "bolt.db"))
+	return os.Remove(filepath.Join(datadir, "bolt.db"))
 }
