@@ -59,10 +59,10 @@ func CloseBolt() {
 }
 
 func RemoveBolt() error {
-	home, err := os.UserHomeDir()
+	datadir, err := GetDataDir()
 	if err != nil {
-		return fmt.Errorf("$HOME directory not found: %w", err)
+		return err
 	}
 
-	return os.Remove(filepath.Join(home, ".tsk", "bolt.db"))
+	return os.Remove(filepath.Join(datadir, "bolt.db"))
 }
