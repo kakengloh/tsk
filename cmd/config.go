@@ -15,7 +15,14 @@ func NewConfigCommand(cr repository.ConfigRepository) *cobra.Command {
 				return err
 			}
 
-			return cr.SetReminders(reminders)
+			err = cr.SetReminders(reminders)
+			if err != nil {
+				return err
+			}
+
+			cmd.Println("Config updated ✅")
+
+			return nil
 		},
 	}
 
