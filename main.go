@@ -16,12 +16,18 @@ func main() {
 	}
 	defer driver.CloseBolt()
 
+	// Config repository
+	cr, err := repository.NewBoltConfigRepository(db)
+	if err != nil {
+		log.Fatalf("failed to initialize config repository: %s", err)
+	}
+
 	// Task repository
 	tr, err := repository.NewBoltTaskRepository(db)
 	if err != nil {
 		log.Fatalf("failed to initialize task repository: %s", err)
 	}
 
-	cmd.Init(tr)
+	cmd.Init(cr, tr)
 	cmd.Execute()
 }
