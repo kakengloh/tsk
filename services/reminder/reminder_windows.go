@@ -1,5 +1,5 @@
-//go:build windows && !darwin && !linux
-// +build windows,!darwin,!linux
+//go:build windows && !darwin && !linux && !freebsd && !netbsd && !openbsd && !js
+// +build windows,!darwin,!linux,!freebsd,!netbsd,!openbsd,!js
 
 package reminder
 
@@ -31,7 +31,7 @@ func Start() error {
 func Stop() error {
 	err := exec.Command("schtasks", "/end", "/tn", "tsk reminder").Run()
 	if err != nil {
-		return fmt.Errorf("failed to run scheduled task: %w", err)
+		return fmt.Errorf("failed to end scheduled task: %w", err)
 	}
 
 	return nil

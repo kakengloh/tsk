@@ -1,5 +1,5 @@
-//go:build darwin && !windows && !linux
-// +build darwin,!windows,!linux
+//go:build darwin && !windows && !linux && !freebsd && !netbsd && !openbsd
+// +build darwin,!windows,!linux,!freebsd,!netbsd,!openbsd
 
 package reminder
 

@@ -1,5 +1,5 @@
-//go:build linux && !darwin && !windows
-// +build linux,!darwin,!windows
+//go:build linux || freebsd || netbsd || openbsd
+// +build linux freebsd netbsd openbsd
 
 package reminder
 
