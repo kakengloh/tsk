@@ -40,8 +40,8 @@ func Init(cr repository.ConfigRepository, tr repository.TaskRepository) {
 	rootCmd.AddCommand(NewCleanCommand())
 	// tsk notify
 	rootCmd.AddCommand(NewNotifyCommand(cr, tr))
-	// tsk config
-	rootCmd.AddCommand(NewConfigCommand(cr))
+	// tsk reminder
+	rootCmd.AddCommand(NewReminderCommand(cr))
 }
 
 func Execute() {

@@ -1,6 +1,10 @@
 package repository
 
+import (
+	"github.com/kakengloh/tsk/entity"
+)
+
 type ConfigRepository interface {
-	GetReminders() ([]int, error)
-	SetReminders(minutes []int) error
+	GetReminder() (entity.ReminderConfig, error)
+	SetReminder(data entity.ReminderConfig) error
 }

@@ -16,9 +16,13 @@ func NewNotifyCommand(cr repository.ConfigRepository, tr repository.TaskReposito
 		Use:   "notify",
 		Short: "Notify on task due",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			reminders, err := cr.GetReminders()
+			reminder, err := cr.GetReminder()
 			if err != nil {
 				return fmt.Errorf("failed to get reminders: %w", err)
+			}
+			remindInMinutes := make([]int, len(reminder.Time))
+			for i, r := range reminder.Time {
+				remindInMinutes[i] = int(r.Minutes())
 			}
 
 			tasks, err := tr.ListTasksWithFilters(entity.TaskFilters{
@@ -30,12 +34,11 @@ func NewNotifyCommand(cr repository.ConfigRepository, tr repository.TaskReposito
 
 			for _, t := range tasks {
 				min := int(time.Until(t.Due).Round(time.Minute).Minutes())
-				if !slices.Contains(reminders, min) {
+				if !slices.Contains(remindInMinutes, min) {
 					continue
 				}
 				msg := fmt.Sprintf("in %d min", min)
 				beeep.Alert(t.Title, msg, "")
-
 				cmd.Printf("Notified: %s\n", fmt.Sprintf("%s %s", t.Title, msg))
 			}
 
