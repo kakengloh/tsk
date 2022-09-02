@@ -15,12 +15,24 @@ func Start() error {
 		return err
 	}
 
-	err = exec.Command("schtasks", "/create", "/sc", "MINUTE", "/mo", "1", "/ts", "tsk reminder", "/tr", binPath, "notify").Run()
+	// Check if scheduled task exists
+	err = exec.Command("schtasks", "/query", "/tn", "TskReminder").Run()
+	// Delete scheduled task if exists
+	if err == nil {
+		err = exec.Command("schtasks", "/delete", "/tn", "TskReminder", "/f").Run()
+		if err != nil {
+			return fmt.Errorf("failed to delete scheduled task: %w", err)
+		}
+	}
+
+	// Create scheduled task
+	err = exec.Command("schtasks", "/create", "/sc", "MINUTE", "/mo", "1", "/tn", "TskReminder", "/tr", binPath, "notify").Run()
 	if err != nil {
 		return fmt.Errorf("failed to create scheduled task: %w", err)
 	}
 
-	err = exec.Command("schtasks", "/run", "/tn", "tsk reminder").Run()
+	// Run scheduled task
+	err = exec.Command("schtasks", "/run", "/tn", "TskReminder").Run()
 	if err != nil {
 		return fmt.Errorf("failed to run scheduled task: %w", err)
 	}
@@ -29,7 +41,8 @@ func Start() error {
 }
 
 func Stop() error {
-	err := exec.Command("schtasks", "/end", "/tn", "tsk reminder").Run()
+	// End scheduled task
+	err := exec.Command("schtasks", "/end", "/tn", "TskReminder").Run()
 	if err != nil {
 		return fmt.Errorf("failed to end scheduled task: %w", err)
 	}
