@@ -26,7 +26,7 @@ func Start() error {
 	}
 
 	// Create scheduled task
-	err = exec.Command("schtasks", "/create", "/sc", "MINUTE", "/mo", "1", "/tn", "TskReminder", "/tr", binPath, "notify").Run()
+	err = exec.Command("schtasks", "/create", "/sc", "MINUTE", "/mo", "1", "/tn", "TskReminder", "/tr", binPath+" notify").Run()
 	if err != nil {
 		return fmt.Errorf("failed to create scheduled task: %w", err)
 	}
