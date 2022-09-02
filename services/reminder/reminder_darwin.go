@@ -93,20 +93,15 @@ func Start() error {
 		return err
 	}
 
-	// Check if launch agent file exists
-	_, err = os.Stat(path.Join(launchAgentsDir, launchAgentFileName))
+	// Create launch agent file
+	f, err := os.OpenFile(path.Join(launchAgentsDir, launchAgentFileName), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		// Create launch agent file
-		f, err := os.OpenFile(path.Join(launchAgentsDir, launchAgentFileName), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			return fmt.Errorf("failed to create launch agent: %w", err)
-		}
-		defer f.Close()
-
-		_, err = f.Write([]byte(payload))
-		if err != nil {
-			return fmt.Errorf("failed to create launch agent: %w", err)
-		}
+		return fmt.Errorf("failed to create launch agent: %w", err)
+	}
+	defer f.Close()
+	_, err = f.Write([]byte(payload))
+	if err != nil {
+		return fmt.Errorf("failed to create launch agent: %w", err)
 	}
 
 	// Start launch agent
