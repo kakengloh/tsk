@@ -47,15 +47,9 @@ func createLaunchAgentPayload(binPath, dataPath string) string {
 					<string>%s</string>
 					<string>notify</string>
 				</array>
-				<key>WorkingDirectory</key>
-				<string>%s</string>
-				<key>StandardOutPath</key>
-				<string>%s</string>
-				<key>StandardErrorPath</key>
-				<string>%s</string>
 			</dict>
 		</plist>
-	`, binPath, binPath, dataPath, path.Join(dataPath, "info.log"), path.Join(dataPath, "error.log"))
+	`, binPath, binPath)
 }
 
 func getLaunchAgentsDir() (string, error) {
@@ -75,19 +69,22 @@ func getLaunchAgentsDir() (string, error) {
 }
 
 func Start() error {
-	// Build launch agent XML payload
+	// Find tsk executable path
 	binPath, err := os.Executable()
 	if err != nil {
 		return err
 	}
 
+	// Find tsk data dir
 	dataPath, err := driver.GetDataDir()
 	if err != nil {
 		return err
 	}
 
+	// Build launch agent XML payload
 	payload := createLaunchAgentPayload(binPath, dataPath)
 
+	// Find LaunchAgents dir
 	launchAgentsDir, err := getLaunchAgentsDir()
 	if err != nil {
 		return err
@@ -104,7 +101,7 @@ func Start() error {
 		return fmt.Errorf("failed to create launch agent: %w", err)
 	}
 
-	// Start launch agent
+	// Load launch agent
 	err = exec.Command("launchctl", "load", "-w", path.Join(launchAgentsDir, launchAgentFileName)).Run()
 	if err != nil {
 		return fmt.Errorf("failed to start launch agent: %w", err)
@@ -114,12 +111,13 @@ func Start() error {
 }
 
 func Stop() error {
+	// Find LaunchAgents dir
 	launchAgentsDir, err := getLaunchAgentsDir()
 	if err != nil {
 		return fmt.Errorf("launch agent has not created: %w", err)
 	}
 
-	// Stop launch agent
+	// Unload launch agent
 	err = exec.Command("launchctl", "unload", "-w", path.Join(launchAgentsDir, launchAgentFileName)).Run()
 	if err != nil {
 		return fmt.Errorf("failed to stop launch agent: %w", err)

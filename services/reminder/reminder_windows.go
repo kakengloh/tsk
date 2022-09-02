@@ -21,7 +21,7 @@ func createVbsPayload(binPath string) string {
 }
 
 func Start() error {
-	// Find tsk path
+	// Find tsk executable
 	binPath, err := os.Executable()
 	if err != nil {
 		return err
