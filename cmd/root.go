@@ -16,7 +16,7 @@ func NewRootCommand() *cobra.Command {
 	}
 }
 
-func Init(tr repository.TaskRepository) {
+func Init(cr repository.ConfigRepository, tr repository.TaskRepository) {
 	rootCmd = NewRootCommand()
 	// tsk ls
 	rootCmd.AddCommand(NewLsCommand(tr))
@@ -38,6 +38,10 @@ func Init(tr repository.TaskRepository) {
 	rootCmd.AddCommand(NewNoteCommand(tr))
 	// tsk clean
 	rootCmd.AddCommand(NewCleanCommand())
+	// tsk notify
+	rootCmd.AddCommand(NewNotifyCommand(cr, tr))
+	// tsk reminder
+	rootCmd.AddCommand(NewReminderCommand(cr))
 }
 
 func Execute() {

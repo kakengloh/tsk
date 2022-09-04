@@ -12,6 +12,7 @@ import (
 	"github.com/kakengloh/tsk/entity"
 	"github.com/kakengloh/tsk/util"
 	"github.com/olekukonko/tablewriter"
+	"github.com/xeonx/timeago"
 )
 
 type Printer struct {
@@ -67,7 +68,7 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 
 	// Calculate time ago
 	// Show relative time by default
-	created := time.Since(task.CreatedAt).Round(time.Second).String() + " ago"
+	created := timeago.English.Format(task.CreatedAt)
 	// If duration is at least a week, show the exact date
 	if time.Since(task.CreatedAt).Hours() >= 168 {
 		created = task.CreatedAt.Format("2006-01-02")
@@ -76,18 +77,16 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 	// Calculate due
 	due := ""
 	if !task.Due.IsZero() {
-		duration := time.Until(task.Due).Round(time.Second)
-
-		if duration.Milliseconds() > 0 {
+		if time.Now().Before(task.Due) {
 			// Before due
-			due = "in " + duration.String()
-
 			if time.Until(task.Due).Hours() > 24 {
 				due = task.Due.Format("2006-01-02 15:04")
+			} else {
+				due = timeago.English.Format(task.Due)
 			}
 		} else {
 			// Over due
-			due = color.HiRedString("over " + duration.String()[1:])
+			due = color.HiRedString(timeago.English.Format(task.Due))
 		}
 	}
 
@@ -134,7 +133,7 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 
 		// Calculate time ago
 		// Show relative time by default
-		created := time.Since(t.CreatedAt).Round(time.Second).String() + " ago"
+		created := timeago.English.Format(t.CreatedAt)
 		// If duration is at least a week, show the exact date
 		if time.Since(t.CreatedAt).Hours() >= 168 {
 			created = t.CreatedAt.Format("2006-01-02")
@@ -143,18 +142,16 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 		// Calculate due
 		due := ""
 		if !t.Due.IsZero() {
-			duration := time.Until(t.Due).Round(time.Second)
-
-			if duration.Milliseconds() > 0 {
+			if time.Now().Before(t.Due) {
 				// Before due
-				due = "in " + duration.String()
-
 				if time.Until(t.Due).Hours() > 24 {
 					due = t.Due.Format("2006-01-02 15:04")
+				} else {
+					due = timeago.English.Format(t.Due)
 				}
 			} else {
 				// Over due
-				due = color.HiRedString("over " + duration.String()[1:])
+				due = color.HiRedString(timeago.English.Format(t.Due))
 			}
 		}
 

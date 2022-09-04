@@ -16,6 +16,7 @@
 `tsk` allows you to create and manage your tasks efficiently your terminal, so that you can dump your mouse 🖱️
 
 ## Why
+
 Shiny task management web apps often have tons of unnecessary features causing UI glitches which impact our UX 😵‍💫 <br> The huge JS chunks loading and network calls on every smallest action causing feedback delay and it is annoying ⌛
 
 Personal task management should be as simple as possible, let's build a snappy cli app that doesn't get in our way ✌️
@@ -25,6 +26,7 @@ Personal task management should be as simple as possible, let's build a snappy c
 - Simple and concise commands ✅
 - Works without internet connection ✅
 - Data stored locally - powered by [BoltDB](https://github.com/etcd-io/bbolt) ✅
+- Task due reminder via desktop notification ✅
 
 See [todo](#todo)
 
@@ -59,6 +61,7 @@ See [releases](https://github.com/kakengloh/tsk/releases)
 ```bash
 tsk new 'make coffee'
 ```
+
 <img width="600" alt="tsk new output" src="https://user-images.githubusercontent.com/40446720/186668426-a5908430-c1db-4529-9206-6033571cff85.png">
 
 ### Create a new task with status, priority and due
@@ -66,6 +69,7 @@ tsk new 'make coffee'
 ```bash
 tsk new 'feed my cat' -s doing -p high -d 1h
 ```
+
 <img width="600" alt="tsk new with options output" src="https://user-images.githubusercontent.com/40446720/186668696-6ba2e1b3-d2d2-4db9-953b-ac706876f365.png">
 
 ### List tasks
@@ -73,6 +77,7 @@ tsk new 'feed my cat' -s doing -p high -d 1h
 ```bash
 tsk ls
 ```
+
 <img width="600" alt="tsk ls output" src="https://user-images.githubusercontent.com/40446720/186668844-d73e83dd-e334-403c-b59e-e8410984c994.png">
 
 ### List tasks with filters (status, priority, due)
@@ -80,6 +85,7 @@ tsk ls
 ```bash
 tsk ls -s doing -p high -d 1h
 ```
+
 <img width="600" alt="tsk ls with filters output" src="https://user-images.githubusercontent.com/40446720/186668966-12b472d3-b38e-449c-b1ad-eec70c86ac42.png">
 
 ### List tasks with a keyword
@@ -87,6 +93,7 @@ tsk ls -s doing -p high -d 1h
 ```bash
 tsk ls cat
 ```
+
 <img width="600" alt="tsk ls with keyword output" src="https://user-images.githubusercontent.com/40446720/186669061-d20d7a1a-7c75-4225-a0e3-f450dbb193af.png">
 
 ### List tasks as JSON
@@ -94,6 +101,7 @@ tsk ls cat
 ```bash
 tsk ls -f json
 ```
+
 <img width="250" alt="tsk ls json format output" src="https://user-images.githubusercontent.com/40446720/186669184-f25cb05d-6625-41db-ac87-3e12b2c03ae0.png">
 
 ### View tasks in a Kanban board
@@ -101,6 +109,7 @@ tsk ls -f json
 ```bash
 tsk board
 ```
+
 <img width="400" alt="tsk board output" src="https://user-images.githubusercontent.com/40446720/186669288-670f387c-0da8-42cd-a348-502c50853d4c.png">
 
 ### Mark task(s) as todo
@@ -108,6 +117,7 @@ tsk board
 ```bash
 tsk todo 2
 ```
+
 <img width="250" alt="tsk todo output" src="https://user-images.githubusercontent.com/40446720/186669381-e5bde5b1-84bd-4cf8-9721-564739930b1e.png">
 
 ### Mark task(s) as doing
@@ -115,6 +125,7 @@ tsk todo 2
 ```bash
 tsk doing 2
 ```
+
 <img width="250" alt="tsk doing output" src="https://user-images.githubusercontent.com/40446720/186669448-5eedb3d0-af4b-4074-a42a-d9daf387571c.png">
 
 ### Mark task(s) as done
@@ -122,6 +133,7 @@ tsk doing 2
 ```bash
 tsk done 2
 ```
+
 <img width="250" alt="tsk done output" src="https://user-images.githubusercontent.com/40446720/186669471-7ab542ad-ce34-495d-b5cc-8aeb36d086d9.png">
 
 ### Modify an existing task
@@ -129,6 +141,7 @@ tsk done 2
 ```bash
 tsk mod 2 -s todo -p low
 ```
+
 <img width="600" alt="tsk mod output" src="https://user-images.githubusercontent.com/40446720/186669548-1be2b856-5f2a-4e34-8788-bbfdf15f58a9.png">
 
 ### Add note(s) on a task
@@ -136,12 +149,32 @@ tsk mod 2 -s todo -p low
 ```bash
 tsk note 2 'it still hungry' 'meow...'
 ```
+
 <img width="600" alt="tsk note output" src="https://user-images.githubusercontent.com/40446720/186669611-8a7c67aa-ac04-479d-b1c3-46fd2829d24c.png">
 
 ### Remove task(s)
 
 ```bash
 tsk rm 1
+```
+
+### Start task reminder
+
+```bash
+tsk reminder start
+```
+
+### Stop task reminder
+
+```bash
+tsk reminder start
+```
+
+### Set task reminder time
+
+```bash
+# Notify on 1 minute, 15 minute and 1 hour before task due
+tsk reminder time 1m 15m 1h
 ```
 
 ### Clean your data
@@ -151,10 +184,12 @@ tsk clean
 ```
 
 ## Todo
+
 - [x] Task due
-- [ ] Due reminder (via desktop notification)
+- [x] Due reminder (via desktop notification)
 
 ## Contributing
+
 We welcome all feature requests and pull requests! 🙋
 
 ---

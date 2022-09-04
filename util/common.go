@@ -2,6 +2,8 @@ package util
 
 import (
 	"encoding/binary"
+	"strconv"
+	"time"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -25,4 +27,32 @@ func MaxLen(slice []string) int {
 		}
 	}
 	return max
+}
+
+func StringSliceToIntSlice(slice []string) ([]int, error) {
+	ints := make([]int, len(slice))
+
+	for i, s := range slice {
+		n, err := strconv.Atoi(s)
+		if err != nil {
+			return ints, err
+		}
+		ints[i] = n
+	}
+
+	return ints, nil
+}
+
+func StringSliceToDurationSlice(slice []string) ([]time.Duration, error) {
+	durations := make([]time.Duration, len(slice))
+
+	for i, s := range slice {
+		d, err := time.ParseDuration(s)
+		if err != nil {
+			return durations, err
+		}
+		durations[i] = d
+	}
+
+	return durations, nil
 }
