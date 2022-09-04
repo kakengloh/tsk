@@ -79,7 +79,11 @@ func (p *Printer) PrintTask(task entity.Task, caption string) {
 	if !task.Due.IsZero() {
 		if time.Now().Before(task.Due) {
 			// Before due
-			due = timeago.English.Format(task.Due)
+			if time.Until(task.Due).Hours() > 24 {
+				due = task.Due.Format("2006-01-02 15:04")
+			} else {
+				due = timeago.English.Format(task.Due)
+			}
 		} else {
 			// Over due
 			due = color.HiRedString(timeago.English.Format(task.Due))
@@ -140,7 +144,11 @@ func (p *Printer) PrintTaskList(tasks []entity.Task) {
 		if !t.Due.IsZero() {
 			if time.Now().Before(t.Due) {
 				// Before due
-				due = timeago.English.Format(t.Due)
+				if time.Until(t.Due).Hours() > 24 {
+					due = t.Due.Format("2006-01-02 15:04")
+				} else {
+					due = timeago.English.Format(t.Due)
+				}
 			} else {
 				// Over due
 				due = color.HiRedString(timeago.English.Format(t.Due))
