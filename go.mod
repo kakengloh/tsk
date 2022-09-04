@@ -12,6 +12,8 @@ require (
 	golang.org/x/text v0.3.7
 )
 
+require github.com/xeonx/timeago v1.0.0-rc5
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gen2brain/beeep v0.0.0-20220518085355-d7852edf42fc
