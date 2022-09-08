@@ -167,7 +167,7 @@ tsk reminder start
 ### Stop task reminder
 
 ```bash
-tsk reminder start
+tsk reminder stop
 ```
 
 ### Set task reminder time
