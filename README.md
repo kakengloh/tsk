@@ -32,6 +32,12 @@ See [todo](#todo)
 
 ## Installation
 
+### Homebrew
+```bash
+brew tap kakengloh/tsk
+brew install tsk
+```
+
 ### Go
 
 ```bash
